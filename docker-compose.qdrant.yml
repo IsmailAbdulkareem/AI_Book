@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant-ai-native
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    environment:
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-default_key}
+      QDRANT_REQUIRE_API_KEY: "false"  # Set to true in production
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks:
+      - ai_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  ai_network:
+    driver: bridge
+
+volumes:
+  qdrant_storage:
+    driver: local

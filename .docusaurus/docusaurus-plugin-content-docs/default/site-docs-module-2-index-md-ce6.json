@@ -1,0 +1,28 @@
+{
+  "id": "module2/module2-digital-twin",
+  "title": "Module 2: The Digital Twin (Gazebo & Unity)",
+  "description": "Master physics simulation and visualization for robot development",
+  "source": "@site/docs/module2/index.md",
+  "sourceDirName": "module2",
+  "slug": "/module2/",
+  "permalink": "/AI_Book/docs/module2/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "id": "module2-digital-twin",
+    "title": "Module 2: The Digital Twin (Gazebo & Unity)",
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Chapter 4: Robot Description with URDF and Xacro",
+    "permalink": "/AI_Book/docs/module1/module1-chapter4"
+  },
+  "next": {
+    "title": "Chapter 1: Gazebo Simulation Basics",
+    "permalink": "/AI_Book/docs/module2/module2-chapter1"
+  }
+}

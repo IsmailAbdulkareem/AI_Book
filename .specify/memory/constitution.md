@@ -1,55 +1,121 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- Sync Impact Report -->
+<!--
+Version change: 0.0.0 → 1.0.0
+Modified principles: None (initial creation)
+Added sections: Core Principles, Key Standards, Constraints & Success Criteria, Governance
+Removed sections: None
+Templates requiring updates:
+- .specify/templates/plan-template.md: ✅ updated
+- .specify/templates/spec-template.md: ✅ updated
+- .specify/templates/tasks-template.md: ✅ updated
+- .specify/templates/commands/*.md: ✅ updated
+Follow-up TODOs: None
+-->
+# AI/Spec-Driven Technical Book with Docusaurus & GitHub Pages Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Spec-first authoring
+The book is planned and guided by Spec-Kit Plus specs (/sp.constitution, /sp.outline, /sp.tasks), not by ad-hoc prompts.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### Technical accuracy
+All technical content (tools, commands, code, workflows) is checked against primary sources (official documentation, standards, or canonical references).
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Clarity for developers
+Writing targets a technical audience (junior–mid software developers) and favors concrete examples, clear explanations, and minimal ambiguity.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### Reproducibility
+Readers can reproduce all examples, code, and setup steps from the public GitHub repository.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Consistency
+Terminology, formatting, structure, and code style are consistent across all chapters.
 
-### [PRINCIPLE_6_NAME]
+### Transparent AI usage
+The use of AI tools (Spec-Kit Plus, Claude Code, etc.) is acknowledged; limitations or uncertainties are not hidden.
 
+## Key Standards
 
-[PRINCIPLE__DESCRIPTION]
+*   **Content & structure**:
+    *   All chapters are written in Markdown/MDX and compatible with Docusaurus.
+    *   Each chapter includes, in order when applicable:
+        *   Frontmatter (title, description, sidebar label, etc.)
+        *   Short abstract / overview
+        *   Prerequisites
+        *   Learning objectives
+        *   Main content (concepts + step-by-step guidance)
+        *   Code/examples or demonstrations
+        *   Summary / key takeaways
+        *   Optional exercises or further reading
+    *   The chapter and section hierarchy matches the outline defined in /sp.outline.
+*   **Technical standards**:
+    *   All code samples are syntactically correct and tested against the specified tool/library versions (where practical).
+    *   When describing commands, APIs, libraries, or configurations, include version numbers where they materially affect behavior.
+    *   Non-trivial technical claims (performance, limitations, behavior of tools/frameworks) are traceable to official docs or widely recognized authoritative sources.
+*   **Writing style**:
+    *   Target Flesch-Kincaid grade level: approximately 10–12.
+    *   Prefer active voice and direct language.
+    *   Introduce and define new or specialized terms on first use.
+    *   Maintain and reuse a consistent glossary for important terms.
+*   **Citations and external material**:
+    *   External ideas, definitions, diagrams, and non-trivial examples are credited via inline links or references.
+    *   Direct quotations are clearly marked and attributed.
+    *   Avoid copying text verbatim from sources; when necessary, quote minimally and with attribution.
+*   **Tooling & workflow**:
+    *   Spec-Kit Plus spec files (/sp.constitution, /sp.outline, /sp.tasks, etc.) are treated as the single source of truth for project scope and structure.
+    *   Any substantial change to book structure or goals is first reflected in the relevant /sp.* spec file.
+    *   Claude Code and other AI tools are used in a loop of:
+        *   Draft → Review → Verify against sources → Revise
+        *   AI output is never accepted as final without human verification.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Constraints & Success Criteria
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+*   **Constraints**:
+    *   **Delivery stack**:
+        *   The book is implemented as a Docusaurus v2 site.
+        *   The site builds successfully via `npm run build` (or the project’s documented build command) without errors.
+        *   The site is deployed to GitHub Pages using a documented procedure in the repository (e.g., README or DEPLOY.md).
+    *   **Repository requirements**:
+        *   The GitHub repository contains:
+            *   All Markdown/MDX content
+            *   Docusaurus configuration files
+            *   Build and deployment scripts/configuration
+            *   Instructions for local setup and build
+        *   The repository is structured so a new contributor can clone, install dependencies, run the dev server, and build the site by following documented steps.
+    *   **Scope & length**:
+        *   Overall scope, chapter list, and section list are defined in /sp.outline.
+        *   Target word-count or page-count ranges per chapter are documented in /sp.outline and respected within a reasonable margin.
+    *   **Quality gates**:
+        *   No intentional TODO, “coming soon”, or placeholder sections in the published version.
+        *   No known broken links, missing images, or obviously failing code snippets at release.
+        *   Where link-checking or linting tools are configured, there are no critical unresolved issues in the main branch.
+    *   **Licensing & IP**:
+        *   The project uses a clear license (e.g., MIT, CC BY-SA, etc.), documented in LICENSE.
+        *   Only content that can legally be included under the chosen license is used.
+        *   Third-party code and diagrams are minimal excerpts, properly attributed, or replaced with original equivalents.
+*   **Success criteria**:
+    *   **Functional delivery**:
+        *   The Docusaurus site builds without errors and is live on GitHub Pages.
+        *   Navigation (sidebar, header links) accurately reflects the structure defined in /sp.outline.
+        *   Code highlighting and basic theming are working and readable.
+    *   **Content quality**:
+        *   Spot-checks of technical claims against primary sources show no major inaccuracies.
+        *   Example commands and code snippets run as described, given the documented environment and versions.
+        *   Readers can follow end-to-end examples or mini-projects without missing steps.
+    *   **Alignment with specs**:
+        *   The final book structure and content align with /sp.outline; any deviations are documented and intentional.
+        *   /sp.tasks reflects the major tasks required to maintain and extend the book.
+    *   **Review & usability**:
+        *   At least one technical peer review is completed focusing on correctness and clarity; identified major issues are fixed.
+        *   At least one reader from the target audience confirms they can:
+            *   Set up the project locally following the docs.
+            *   Complete the primary learning outcomes and hands-on exercises defined in /sp.outline.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+*   This constitution supersedes all other project practices.
+*   Amendments require documentation, approval, and a migration plan.
+*   All pull requests and code reviews must verify compliance with these principles.
+*   Complexity must always be justified and aligned with the principle of simplicity.
+*   Refer to project-specific guidance documents for runtime development.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-12-04 | **Last Amended**: 2025-12-04

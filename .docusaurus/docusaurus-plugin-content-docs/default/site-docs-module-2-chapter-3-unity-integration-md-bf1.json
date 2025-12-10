@@ -1,0 +1,28 @@
+{
+  "id": "module2/module2-chapter3",
+  "title": "Chapter 3: Unity Integration for Visualization",
+  "description": "Type: Practice-Heavy",
+  "source": "@site/docs/module2/chapter-3-unity-integration.md",
+  "sourceDirName": "module2",
+  "slug": "/module2/module2-chapter3",
+  "permalink": "/AI_Book/docs/module2/module2-chapter3",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "id": "module2-chapter3",
+    "title": "Chapter 3: Unity Integration for Visualization",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Chapter 2: Robot Control in Gazebo",
+    "permalink": "/AI_Book/docs/module2/module2-chapter2"
+  },
+  "next": {
+    "title": "Module 3: The AI-Robot Brain (NVIDIA Isaac)",
+    "permalink": "/AI_Book/docs/module3/"
+  }
+}

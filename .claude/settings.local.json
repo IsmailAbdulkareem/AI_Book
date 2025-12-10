@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(mkdir:*)",
+      "WebSearch",
+      "Bash(npx create-docusaurus@latest:*)",
+      "Bash(npm install)",
+      "Bash(powershell -Command:*)",
+      "Bash(test -d \"D:\\spec-driven-dev\\ai-native\\specs\\1-physical-ai-robotics-book\\checklists\"\" && echo \"exists\" || echo \"does not exist \")",
+      "Bash(npm install --save-dev @docusaurus/plugin-sitemap)",
+      "Bash(npm install --save sitemap)",
+      "Bash(mkdir -p src/models)",
+      "Bash(.specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "Bash(git rev-parse --git-dir)",
+      "Bash(powershell \"Get-ChildItem -Path ''D:\\spec-driven-dev\\ai-native\\'' -Directory | Select-Object Name\")",
+      "Bash(powershell \"Test-Path ''D:\\spec-driven-dev\\ai-native\\specs\\002-rag-chatbot-book\\checklists'' -PathType Container\")",
+      "Bash(powershell \"Get-ChildItem -Path ''D:\\spec-driven-dev\\ai-native\\specs\\002-rag-chatbot-book\\checklists'' -Filter ''*.md'' -Recurse\")",
+      "Bash(dir:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

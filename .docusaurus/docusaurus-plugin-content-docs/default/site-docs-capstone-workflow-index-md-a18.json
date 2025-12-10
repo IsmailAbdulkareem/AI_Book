@@ -1,0 +1,28 @@
+{
+  "id": "capstone_workflow/capstone-autonomous-humanoid",
+  "title": "Capstone Project: The Autonomous Humanoid",
+  "description": "Project Goal",
+  "source": "@site/docs/capstone_workflow/index.md",
+  "sourceDirName": "capstone_workflow",
+  "slug": "/capstone_workflow/",
+  "permalink": "/AI_Book/docs/capstone_workflow/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 9,
+  "frontMatter": {
+    "id": "capstone-autonomous-humanoid",
+    "title": "Capstone Project: The Autonomous Humanoid",
+    "sidebar_position": 9
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Hardware & Lab Architecture",
+    "permalink": "/AI_Book/docs/hardware-lab-architecture/"
+  },
+  "next": {
+    "title": "Resources",
+    "permalink": "/AI_Book/docs/appendix/appendix-resources"
+  }
+}

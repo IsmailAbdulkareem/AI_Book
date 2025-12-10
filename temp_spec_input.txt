@@ -1,0 +1,170 @@
+Physical AI & Humanoid Robotics Technical Book
+
+Target audience:
+
+- Students taking an advanced AI/robotics capstone focused on Physical AI and humanoid robotics
+
+- Self-learners with prior AI/software background who want to move from digital AI to embodied intelligence
+
+- Instructors and lab designers who need a structured curriculum and lab blueprint for Physical AI
+
+
+
+Focus:
+
+- A Docusaurus-based technical book that teaches **Physical AI & Humanoid Robotics**: AI systems that operate in the physical world and obey physical laws.
+
+- Bridging the gap between the **digital brain** (AI, LLMs, perception, planning) and the **physical body** (humanoid robots, sensors, actuators) using:
+
+  - ROS 2 (the robotic nervous system)
+
+  - Gazebo & Unity (the digital twin)
+
+  - NVIDIA Isaac (AI-robot brain, perception, sim-to-real)
+
+  - Vision-Language-Action (VLA) pipelines integrating speech, LLMs, and robot actions
+
+
+
+Success criteria:
+
+- The book clearly explains **Physical AI** and **embodied intelligence**, and distinguishes them from purely digital AI.
+
+- Reader can:
+
+  - Build and run basic **ROS 2** packages in Python, using nodes, topics, services, actions, launch files, and parameters.
+
+  - Model a humanoid (or proxy robot) using **URDF/SDF** and simulate it in **Gazebo**, including basic sensors.
+
+  - Understand and use **NVIDIA Isaac Sim** and **Isaac ROS** concepts for perception, VSLAM, navigation, and sim-to-real transfer.
+
+  - Construct a basic **Vision-Language-Action** pipeline:
+
+    - Voice input via Whisper (or equivalent ASR)
+
+    - LLM-based task planning from natural language commands
+
+    - Execution via ROS 2 actions on a simulated robot
+
+  - Follow a complete **capstone workflow**: an autonomous simulated humanoid that:
+
+    - Receives a natural-language voice command
+
+    - Plans a path and navigates obstacles
+
+    - Identifies a target object via computer vision
+
+    - Manipulates or interacts with the object in simulation
+
+- The book maps clearly to the provided **modules and weekly breakdown**:
+
+  - Module 1: ROS 2 as the robotic nervous system
+
+  - Module 2: The digital twin with Gazebo & Unity
+
+  - Module 3: NVIDIA Isaac (Sim, ROS, Nav2) as the AI-robot brain
+
+  - Module 4: VLA and conversational robotics
+  - Weeks 1–13 topics are all covered at least at a practical, implementable level.
+- The book includes a **hardware and lab architecture chapter** that:
+  - Describes the “Digital Twin” workstation requirements (RTX GPU, CPU, RAM, Ubuntu, etc.).
+  - Describes the “Physical AI” Edge Kit (Jetson, RealSense, IMU, mic array).
+  - Explains three tiers of the “Robot Lab” (Proxy robot, Miniature humanoid, Premium humanoid).
+  - Explains the “Ether Lab” (cloud-native) and “Economy Jetson Student Kit”.
+  - Discusses the **latency trap** and the cloud-to-edge deployment pattern (train in cloud, deploy to Jetson).
+- After reading, a motivated reader (with prerequisites) can:
+  - Design a realistic **learning path** for themselves or students over ~13 weeks.
+  - Plan a **budget and architecture** for a Physical AI lab using the options described.
+  - Implement at least **one working prototype** (sim-only, edge-only, or partial sim-to-real) aligned with the capstone.
+
+
+
+Constraints:
+
+- Format & platform:
+
+  - Content is delivered as a **Docusaurus** book (Markdown/MDX), as defined in `/sp.constitution`.
+
+  - All examples assume a default environment of **Ubuntu 22.04 LTS** and **ROS 2 Humble or Iron**.
+
+- Technical scope:
+
+  - Covers the four main modules:
+
+    - ROS 2 fundamentals for humanoid/proxy robot control
+
+    - Gazebo + Unity for digital twin and environment simulation
+
+    - NVIDIA Isaac (Sim + Isaac ROS + Nav2) for perception and navigation
+
+    - VLA and conversational robotics (Whisper, LLM-based planning, ROS 2 actions)
+
+  - Includes explicit sections for:
+
+    - Weekly progression (Weeks 1–13) aligned with the given breakdown.
+
+    - Assessments: ROS 2 project, Gazebo sim, Isaac perception pipeline, final capstone.
+
+    - Hardware requirements and lab design (on-prem vs cloud).
+
+- Level & prerequisites:
+
+  - Assumes readers are comfortable with:
+
+    - Python programming
+
+    - Linux command line basics
+
+    - Introductory AI/ML concepts
+
+  - Does **not** assume prior ROS or robotics experience; these are introduced from fundamentals.
+
+- Hackathon/project alignment:
+
+  - Book structure (chapters/sections) must align with `/sp.outline`.
+
+  - First complete version must be ready before the **hackathon deadline** defined in `/sp.hackathon`.
+
+- Practicality:
+
+  - Examples should be runnable on:
+
+    - A single RTX-enabled workstation (preferred), **or**
+
+    - A cloud-based “Ether Lab” setup + local Jetson Edge Kit, with clear notes on cost and latency.
+
+  - Where hardware is optional (e.g., real robot vs pure sim), the book must clearly mark:
+
+    - **Required for learning** vs **optional/advanced** hardware paths.
+
+
+
+Not building:
+
+- A full mechanical or electrical engineering guide:
+
+  - No step-by-step instructions for designing or fabricating humanoid hardware from raw components.
+
+  - No in-depth PCB design, motor driver electronics, or structural engineering tutorials.
+
+- A general AI/ML theory textbook:
+
+  - No exhaustive coverage of deep learning theory beyond what is required for perception and control in this course.
+
+  - No comprehensive treatment of LLM internals; focus remains on **using** them in VLA pipelines.
+
+- A Unity or game development book:
+
+  - Unity is covered only as needed for robot visualization and human-robot interaction scenes.
+
+  - No full game dev workflows, asset pipelines, or unrelated graphics topics.
+
+- A safety, ethics, or policy framework:
+
+  - May briefly mention safety, ethics, and societal impact, but does not attempt to be a complete ethics/policy guide.
+
+- A hardware purchasing catalog:
+
+  - Will reference key hardware (RTX workstations, Jetson kits, Unitree robots, etc.) and approximate costs,
+
+    but will not attempt to track real-time prices or provide regional purchasing guidance.

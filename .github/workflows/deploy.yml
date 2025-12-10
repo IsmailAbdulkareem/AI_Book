@@ -1,0 +1,39 @@
+name: Deploy Docusaurus site to GitHub Pages
+
+on: # Trigger the workflow on push or pull request events
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Fetch all history for @docusaurus/plugin-content-docs --last-update
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Or your preferred Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Docusaurus website
+        run: npm run build
+
+      # Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build # The directory containing the built Docusaurus site
+          # By default, peaceiris/actions-gh-pages uses the gh-pages branch.
+          # If you want to deploy to a custom branch, uncomment and modify:
+          # publish_branch: 'docs'

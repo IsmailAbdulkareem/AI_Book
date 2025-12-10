@@ -1,0 +1,136 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/AI_Book/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/AI_Book/docs",
+          "mainDocId": "introduction/introduction",
+          "docs": [
+            {
+              "id": "appendix/appendix-assessments",
+              "path": "/AI_Book/docs/appendix/appendix-assessments",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "appendix/appendix-resources",
+              "path": "/AI_Book/docs/appendix/appendix-resources",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "capstone_workflow/capstone-autonomous-humanoid",
+              "path": "/AI_Book/docs/capstone_workflow/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "glossary",
+              "path": "/AI_Book/docs/glossary",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "hardware-lab-architecture/hardware-lab-architecture",
+              "path": "/AI_Book/docs/hardware-lab-architecture/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/AI_Book/docs/intro"
+            },
+            {
+              "id": "introduction/intro-environment-setup",
+              "path": "/AI_Book/docs/introduction/intro-environment-setup",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "introduction/introduction",
+              "path": "/AI_Book/docs/introduction/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module1/module1-chapter1",
+              "path": "/AI_Book/docs/module1/module1-chapter1",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module1/module1-chapter2",
+              "path": "/AI_Book/docs/module1/module1-chapter2",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module1/module1-chapter3",
+              "path": "/AI_Book/docs/module1/module1-chapter3",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module1/module1-chapter4",
+              "path": "/AI_Book/docs/module1/module1-chapter4",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module1/module1-ros2",
+              "path": "/AI_Book/docs/module1/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module2/module2-chapter1",
+              "path": "/AI_Book/docs/module2/module2-chapter1",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module2/module2-chapter2",
+              "path": "/AI_Book/docs/module2/module2-chapter2",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module2/module2-chapter3",
+              "path": "/AI_Book/docs/module2/module2-chapter3",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module2/module2-digital-twin",
+              "path": "/AI_Book/docs/module2/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module3/module3-chapter1",
+              "path": "/AI_Book/docs/module3/module3-chapter1",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module3/module3-isaac",
+              "path": "/AI_Book/docs/module3/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module4/module4-chapter1",
+              "path": "/AI_Book/docs/module4/module4-chapter1",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "module4/module4-chapter2",
+              "path": "/AI_Book/docs/module4/module4-chapter2"
+            },
+            {
+              "id": "module4/module4-vla",
+              "path": "/AI_Book/docs/module4/",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/AI_Book/docs/introduction/",
+                "label": "introduction/introduction"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

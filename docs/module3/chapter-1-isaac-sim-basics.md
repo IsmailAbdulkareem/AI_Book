@@ -2,6 +2,12 @@
 id: module3-chapter1
 title: "Chapter 1: NVIDIA Isaac Sim Basics"
 sidebar_position: 1
+
+
+
+
+
+
 ---
 
 # Chapter 1: NVIDIA Isaac Sim Basics
@@ -193,6 +199,6 @@ Vary simulation parameters to improve sim-to-real transfer:
 
 ## Next Steps
 
-- [Chapter 2: Isaac ROS Integration](./chapter-2-isaac-ros.md)
-- [Return to Module 3 Overview](../module3/index.md)
+- [Return to Module 3 Overview](./index.md)
+- [Module 4: Vision-Language-Action](../module4/index.md)
 

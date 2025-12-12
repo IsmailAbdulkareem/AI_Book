@@ -4,6 +4,7 @@ dist/
 build/
 *.log
 .env*
+.docusaurus/
 
 # Python
 __pycache__/

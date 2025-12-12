@@ -6,6 +6,10 @@ on: # Trigger the workflow on push or pull request events
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   deploy:
     name: Deploy to GitHub Pages

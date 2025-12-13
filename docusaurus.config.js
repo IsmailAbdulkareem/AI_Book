@@ -3,7 +3,7 @@ const config = {
   title: 'Physical AI & Humanoid Robotics',
   tagline: 'Bridging Digital AI with Physical Bodies',
   url: 'https://IsmailAbdulkareem.github.io',
-  baseUrl: '/',
+  baseUrl: '/AI_Book/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',

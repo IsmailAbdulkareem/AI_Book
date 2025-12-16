@@ -29,7 +29,14 @@ export default {
       }
     ]
   ],
-  "plugins": [],
+  "plugins": [
+    [
+      "./src/plugins/docusaurus-plugin-chatbot",
+      {
+        "apiUrl": "http://localhost:8000"
+      }
+    ]
+  ],
   "themeConfig": {
     "navbar": {
       "title": "Physical AI & Humanoid Robotics",

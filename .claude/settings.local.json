@@ -55,7 +55,15 @@
       "Bash(ls:*)",
       "Bash(timeout 60 uv run:*)",
       "Bash(timeout 90 uv run python:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/create-new-feature.ps1 -Json -Number 5 -ShortName \"frontend-chatbot-ui\" \"Frontend RAG Chatbot UI Integration\")",
+      "Bash(powershell -ExecutionPolicy Bypass -File .specify/scripts/powershell/setup-plan.ps1 -Json)",
+      "Bash(npm run build:*)",
+      "mcp__github__list_commits",
+      "WebFetch(domain:ismailabdulkareem.github.io)",
+      "mcp__github__search_issues",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

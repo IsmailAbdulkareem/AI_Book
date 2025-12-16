@@ -132,5 +132,10 @@
       ],
       "breadcrumbs": true
     }
+  },
+  "docusaurus-plugin-chatbot": {
+    "default": {
+      "apiUrl": "http://localhost:8000"
+    }
   }
 }

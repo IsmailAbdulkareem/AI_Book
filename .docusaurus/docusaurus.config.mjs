@@ -10,8 +10,8 @@ export default {
   "baseUrl": "/AI_Book/",
   "onBrokenLinks": "throw",
   "favicon": "img/favicon.ico",
-  "organizationName": "your-org",
-  "projectName": "physical-ai-robotics-book",
+  "organizationName": "IsmailAbdulkareem",
+  "projectName": "AI_Book",
   "presets": [
     [
       "classic",
@@ -29,17 +29,7 @@ export default {
       }
     ]
   ],
-  "plugins": [
-    [
-      "./src/docusaurus-plugin/docusaurus-plugin-rag-chatbot.js",
-      {
-        "apiUrl": "http://localhost:8000",
-        "enabled": true,
-        "position": "bottom-right",
-        "theme": "default"
-      }
-    ]
-  ],
+  "plugins": [],
   "themeConfig": {
     "navbar": {
       "title": "Physical AI & Humanoid Robotics",

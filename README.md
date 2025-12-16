@@ -4,21 +4,28 @@ This repository hosts the technical book "Physical AI & Humanoid Robotics: Bridg
 
 ## Project Structure
 
-- `docs/`: Markdown files for book chapters and modules.
-- `src/`: React components and custom CSS for Docusaurus theming, plus backend services for the RAG chatbot.
-- `static/`: Static assets like images and favicons.
-- `docusaurus.config.js`: Docusaurus site configuration.
-- `sidebars.js`: Configuration for the documentation sidebar navigation.
-- `specs/`: Specification files for the book content and project planning.
-- `history/`: Prompt history records (PHRs) and architectural decision records (ADRs).
-- `src/main.py` - Main FastAPI application
-- `src/ai/` - AI clients (Cohere, OpenAI)
-- `src/vector_store/` - Qdrant vector store client
-- `src/services/` - Core services (RAG, content retrieval, etc.)
-- `src/api/` - API endpoints
-- `src/database/` - Database models and repositories
-- `src/frontend/` - Frontend components (React chat widget)
-- `src/docusaurus-plugin/` - Docusaurus plugin for chat widget integration
+### Frontend (Docusaurus)
+- `docs/` - Markdown files for book chapters and modules
+- `src/` - React components and custom CSS for Docusaurus theming
+- `src/components/` - React components including chat widget
+- `src/css/` - Custom styling
+- `static/` - Static assets like images and favicons
+- `docusaurus.config.js` - Docusaurus site configuration
+- `sidebars.js` - Configuration for the documentation sidebar navigation
+
+### Backend (RAG Chatbot)
+- `database/` - All backend services for the RAG chatbot
+  - `database/main.py` - Main FastAPI application
+  - `database/ai/` - AI clients (Cohere, OpenAI)
+  - `database/vector_store/` - Qdrant vector store client
+  - `database/services/` - Core services (RAG, content retrieval, etc.)
+  - `database/api/` - API endpoints
+  
+  - `database/models/` - Database models and repositories
+
+### Project Management
+- `specs/` - Specification files for the book content and project planning
+- `history/` - Prompt history records (PHRs) and architectural decision records (ADRs)
 
 ## Local Development
 
@@ -62,7 +69,7 @@ You need to run both the backend and frontend servers:
 
 1. **Start the backend server**:
    ```bash
-   uvicorn src.main:app --reload --port 8000
+   uvicorn database.main:app --reload --port 8000
    ```
 
 2. **In a separate terminal, start the frontend (Docusaurus)**:

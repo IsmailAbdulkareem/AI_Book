@@ -1,22 +1,19 @@
 <!-- Sync Impact Report -->
 <!--
-Version change: 0.0.0 → 1.0.0
-Modified principles: None (initial creation)
-Added sections: Core Principles, Key Standards, Constraints & Success Criteria, Governance
+Version change: 1.0.0 → 1.1.0
+Modified principles: None
+Added sections: RAG System Governance
 Removed sections: None
-Templates requiring updates:
-- .specify/templates/plan-template.md: ✅ updated
-- .specify/templates/spec-template.md: ✅ updated
-- .specify/templates/tasks-template.md: ✅ updated
-- .specify/templates/commands/*.md: ✅ updated
+Templates requiring updates: None
 Follow-up TODOs: None
 -->
+
 # AI/Spec-Driven Technical Book with Docusaurus & GitHub Pages Constitution
 
 ## Core Principles
 
 ### Spec-first authoring
-The book is planned and guided by Spec-Kit Plus specs (/sp.constitution, /sp.outline, /sp.tasks), not by ad-hoc prompts.
+The project is planned and guided by Spec-Kit Plus specs (`/sp.constitution`, `/sp.outline`, `/sp.specify`, `/sp.plan`, `/sp.tasks`), not by ad-hoc prompts or undocumented decisions.
 
 ### Technical accuracy
 All technical content (tools, commands, code, workflows) is checked against primary sources (official documentation, standards, or canonical references).
@@ -25,97 +22,167 @@ All technical content (tools, commands, code, workflows) is checked against prim
 Writing targets a technical audience (junior–mid software developers) and favors concrete examples, clear explanations, and minimal ambiguity.
 
 ### Reproducibility
-Readers can reproduce all examples, code, and setup steps from the public GitHub repository.
+Readers and contributors can reproduce all examples, code, and setup steps from the public GitHub repository.
 
 ### Consistency
-Terminology, formatting, structure, and code style are consistent across all chapters.
+Terminology, formatting, structure, and code style are consistent across all chapters and system components.
 
 ### Transparent AI usage
 The use of AI tools (Spec-Kit Plus, Claude Code, etc.) is acknowledged; limitations or uncertainties are not hidden.
 
+---
+
 ## Key Standards
 
-*   **Content & structure**:
-    *   All chapters are written in Markdown/MDX and compatible with Docusaurus.
-    *   Each chapter includes, in order when applicable:
-        *   Frontmatter (title, description, sidebar label, etc.)
-        *   Short abstract / overview
-        *   Prerequisites
-        *   Learning objectives
-        *   Main content (concepts + step-by-step guidance)
-        *   Code/examples or demonstrations
-        *   Summary / key takeaways
-        *   Optional exercises or further reading
-    *   The chapter and section hierarchy matches the outline defined in /sp.outline.
-*   **Technical standards**:
-    *   All code samples are syntactically correct and tested against the specified tool/library versions (where practical).
-    *   When describing commands, APIs, libraries, or configurations, include version numbers where they materially affect behavior.
-    *   Non-trivial technical claims (performance, limitations, behavior of tools/frameworks) are traceable to official docs or widely recognized authoritative sources.
-*   **Writing style**:
-    *   Target Flesch-Kincaid grade level: approximately 10–12.
-    *   Prefer active voice and direct language.
-    *   Introduce and define new or specialized terms on first use.
-    *   Maintain and reuse a consistent glossary for important terms.
-*   **Citations and external material**:
-    *   External ideas, definitions, diagrams, and non-trivial examples are credited via inline links or references.
-    *   Direct quotations are clearly marked and attributed.
-    *   Avoid copying text verbatim from sources; when necessary, quote minimally and with attribution.
-*   **Tooling & workflow**:
-    *   Spec-Kit Plus spec files (/sp.constitution, /sp.outline, /sp.tasks, etc.) are treated as the single source of truth for project scope and structure.
-    *   Any substantial change to book structure or goals is first reflected in the relevant /sp.* spec file.
-    *   Claude Code and other AI tools are used in a loop of:
-        *   Draft → Review → Verify against sources → Revise
-        *   AI output is never accepted as final without human verification.
+### Content & Structure
+- All chapters are written in Markdown/MDX and compatible with Docusaurus.
+- Each chapter includes, when applicable:
+  - Frontmatter (title, description, sidebar label)
+  - Short abstract / overview
+  - Prerequisites
+  - Learning objectives
+  - Main content (concepts + step-by-step guidance)
+  - Code examples or demonstrations
+  - Summary / key takeaways
+  - Optional exercises or further reading
+- Chapter and section hierarchy follows `/sp.outline`.
+
+### Technical Standards
+- All code samples are syntactically correct and tested where practical.
+- Version numbers are included when behavior depends on them.
+- Non-trivial claims are traceable to authoritative sources.
+
+### Writing Style
+- Target Flesch-Kincaid grade level: 10–12
+- Prefer active voice and precise language
+- Define new terms on first use
+- Maintain a consistent glossary
+
+### Citations & External Material
+- External ideas and examples are credited via links or references
+- Direct quotations are clearly marked
+- Avoid verbatim copying unless necessary and attributed
+
+### Tooling & Workflow
+- Spec-Kit Plus spec files are the single source of truth
+- Structural or scope changes must be reflected in specs first
+- AI output follows a loop of:
+  - Draft → Review → Verify → Revise
+- AI output is never accepted blindly
+
+---
+
+## RAG System Governance (Retrieval-Augmented Generation)
+
+### Scope of the RAG System
+
+The project includes a Retrieval-Augmented Generation (RAG) system tightly coupled to the book’s published content.  
+This system is governed by the same spec-first discipline as the book.
+
+### RAG Spec Lifecycle
+
+The RAG system is developed in clearly defined phases:
+
+- **Spec 1** — Website content ingestion, embedding generation, vector storage
+- **Spec 2** — Retrieval, querying, and pipeline validation
+- **Spec 3** — Agent integration using OpenAI Agents / ChatKit SDK
+- **Spec 4** — Frontend integration and user-facing interaction
+
+Each spec MUST:
+- Include `/sp.specify`, `/sp.plan`, and `/sp.tasks`
+- Be independently testable
+- Clearly declare out-of-scope functionality
+
+### Determinism & Reproducibility
+
+- Ingestion pipelines MUST be idempotent
+- Re-running pipelines MUST NOT create duplicate or corrupted data
+- Vector collections MUST be reproducible from source URLs
+
+### Data & Storage Standards
+
+- Persistent artifacts (schemas, configs, snapshots) MUST reside under a dedicated `database/` directory
+- Vector metadata schemas MUST be documented
+- Secrets are never committed; environment variables are mandatory
+
+### Retrieval Guarantees
+
+- Retrieved content MUST be source-grounded
+- Metadata (source URL, page title, section, chunk index) MUST always be preserved
+- Retrieval correctness MUST be validated before any LLM or agent integration
+
+### Separation of Concerns
+
+- Ingestion ≠ Retrieval ≠ Generation ≠ UI
+- Each layer evolves independently but is governed by specs
+
+---
 
 ## Constraints & Success Criteria
 
-*   **Constraints**:
-    *   **Delivery stack**:
-        *   The book is implemented as a Docusaurus v2 site.
-        *   The site builds successfully via `npm run build` (or the project’s documented build command) without errors.
-        *   The site is deployed to GitHub Pages using a documented procedure in the repository (e.g., README or DEPLOY.md).
-    *   **Repository requirements**:
-        *   The GitHub repository contains:
-            *   All Markdown/MDX content
-            *   Docusaurus configuration files
-            *   Build and deployment scripts/configuration
-            *   Instructions for local setup and build
-        *   The repository is structured so a new contributor can clone, install dependencies, run the dev server, and build the site by following documented steps.
-    *   **Scope & length**:
-        *   Overall scope, chapter list, and section list are defined in /sp.outline.
-        *   Target word-count or page-count ranges per chapter are documented in /sp.outline and respected within a reasonable margin.
-    *   **Quality gates**:
-        *   No intentional TODO, “coming soon”, or placeholder sections in the published version.
-        *   No known broken links, missing images, or obviously failing code snippets at release.
-        *   Where link-checking or linting tools are configured, there are no critical unresolved issues in the main branch.
-    *   **Licensing & IP**:
-        *   The project uses a clear license (e.g., MIT, CC BY-SA, etc.), documented in LICENSE.
-        *   Only content that can legally be included under the chosen license is used.
-        *   Third-party code and diagrams are minimal excerpts, properly attributed, or replaced with original equivalents.
-*   **Success criteria**:
-    *   **Functional delivery**:
-        *   The Docusaurus site builds without errors and is live on GitHub Pages.
-        *   Navigation (sidebar, header links) accurately reflects the structure defined in /sp.outline.
-        *   Code highlighting and basic theming are working and readable.
-    *   **Content quality**:
-        *   Spot-checks of technical claims against primary sources show no major inaccuracies.
-        *   Example commands and code snippets run as described, given the documented environment and versions.
-        *   Readers can follow end-to-end examples or mini-projects without missing steps.
-    *   **Alignment with specs**:
-        *   The final book structure and content align with /sp.outline; any deviations are documented and intentional.
-        *   /sp.tasks reflects the major tasks required to maintain and extend the book.
-    *   **Review & usability**:
-        *   At least one technical peer review is completed focusing on correctness and clarity; identified major issues are fixed.
-        *   At least one reader from the target audience confirms they can:
-            *   Set up the project locally following the docs.
-            *   Complete the primary learning outcomes and hands-on exercises defined in /sp.outline.
+### Constraints
+
+#### Delivery Stack
+- Docusaurus v2
+- Build succeeds via `npm run build`
+- Deployed to GitHub Pages with documented steps
+
+#### Repository Requirements
+- Contains:
+  - All Markdown/MDX content
+  - Docusaurus config
+  - Build & deployment scripts
+  - Local setup instructions
+- New contributors can build and run the project from docs alone
+
+#### Scope & Length
+- Defined in `/sp.outline`
+- Word-count targets respected within reason
+
+#### Quality Gates
+- No placeholder or TODO sections in published output
+- No broken links or failing code snippets
+- Linting and link checks have no critical errors
+
+#### Licensing & IP
+- Clear license in `LICENSE`
+- Third-party material is attributed or replaced
+
+### Success Criteria
+
+#### Functional Delivery
+- Site builds and is live on GitHub Pages
+- Navigation reflects `/sp.outline`
+- Code highlighting and theming work correctly
+
+#### Content Quality
+- Spot-checks reveal no major inaccuracies
+- Code examples run as documented
+- Readers can complete end-to-end examples
+
+#### Alignment with Specs
+- Final output aligns with `/sp.outline`
+- Deviations are documented and intentional
+- `/sp.tasks` reflects maintenance and extension work
+
+#### Review & Usability
+- At least one technical peer review completed
+- At least one target reader confirms they can:
+  - Set up locally
+  - Complete learning objectives
+
+---
 
 ## Governance
 
-*   This constitution supersedes all other project practices.
-*   Amendments require documentation, approval, and a migration plan.
-*   All pull requests and code reviews must verify compliance with these principles.
-*   Complexity must always be justified and aligned with the principle of simplicity.
-*   Refer to project-specific guidance documents for runtime development.
+- This constitution supersedes all other project practices
+- Amendments require documentation and a migration plan
+- All pull requests must comply with this constitution
+- Complexity must always be justified
+- Project-specific runtime guidance lives in supporting docs
 
-**Version**: 1.0.0 | **Ratified**: 2025-12-04 | **Last Amended**: 2025-12-04
+---
+
+**Version**: 1.1.0  
+**Ratified**: 2025-12-04  
+**Last Amended**: 2025-12-13

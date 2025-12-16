@@ -1,3 +1,5 @@
+const path = require('path');
+
 /**
  * Docusaurus Plugin: RAG Chatbot
  *
@@ -15,8 +17,8 @@ module.exports = function pluginChatbot(context, options) {
   return {
     name: 'docusaurus-plugin-chatbot',
 
-    getClientModules() {
-      return [require.resolve('./chatbot-client.js')];
+    getThemePath() {
+      return path.resolve(__dirname, './theme');
     },
 
     contentLoaded({ actions }) {

@@ -30,16 +30,12 @@ const config = {
   ],
 
   plugins: [
-    // Temporarily disabled - causing build issues
-    // [
-    //   './src/docusaurus-plugin/docusaurus-plugin-rag-chatbot.js',
-    //   {
-    //     apiUrl: process.env.RAG_CHATBOT_API_URL || 'http://localhost:8000',
-    //     enabled: process.env.RAG_CHATBOT_ENABLED !== 'false',
-    //     position: 'bottom-right',
-    //     theme: 'default'
-    //   }
-    // ]
+    [
+      './src/plugins/docusaurus-plugin-chatbot',
+      {
+        apiUrl: process.env.RAG_CHATBOT_API_URL || 'http://localhost:8000',
+      },
+    ],
   ],
 
   themeConfig: ({

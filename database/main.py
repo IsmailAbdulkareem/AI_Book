@@ -31,7 +31,7 @@ logger = logging.getLogger("docusaurus-rag-pipeline")
 # Constants
 # -----------------------------------------------------------------------------
 
-DEFAULT_COLLECTION = "rag_embedding"
+DEFAULT_COLLECTION = os.getenv("QDRANT_COLLECTION", "rag_embedding")
 COHERE_EMBED_MODEL = "embed-multilingual-v3.0"
 VECTOR_SIZE = 1024
 REQUEST_TIMEOUT = 15

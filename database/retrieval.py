@@ -43,7 +43,7 @@ load_dotenv()
 # Constants (must match main.py ingestion)
 # -----------------------------------------------------------------------------
 
-DEFAULT_COLLECTION = "rag_embedding"
+DEFAULT_COLLECTION = os.getenv("QDRANT_COLLECTION", "rag_embedding")
 COHERE_EMBED_MODEL = "embed-multilingual-v3.0"
 VECTOR_SIZE = 1024
 

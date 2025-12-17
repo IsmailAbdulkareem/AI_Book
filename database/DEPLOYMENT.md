@@ -18,6 +18,8 @@ Before deploying, you need:
    - Sign up at https://platform.openai.com/
    - Create an API key
 
+---
+
 ## Step 1: Set Up Qdrant Cloud
 
 1. Go to https://cloud.qdrant.io/
@@ -25,16 +27,22 @@ Before deploying, you need:
 3. Copy your cluster URL (e.g., `https://xxx-xxx.cloud.qdrant.io:6333`)
 4. Create an API key and copy it
 
+---
+
 ## Step 2: Ingest Your Documentation
 
-Before deployment, you need to populate your Qdrant database with embeddings:
+**IMPORTANT**: Before deployment, you MUST populate your Qdrant database with embeddings.
 
 ```bash
 cd database
 
 # Create .env file with your credentials
 cp .env.example .env
-# Edit .env with your actual keys
+# Edit .env with your actual keys:
+# COHERE_API_KEY=your-key
+# QDRANT_URL=https://your-cluster.cloud.qdrant.io:6333
+# QDRANT_API_KEY=your-key
+# OPENAI_API_KEY=your-key
 
 # Install dependencies
 pip install -r requirements.txt
@@ -45,119 +53,150 @@ python main.py
 
 This will crawl your documentation site and store embeddings in Qdrant Cloud.
 
-## Step 3: Deploy to Railway (Recommended)
+**Verify embeddings exist:**
+```bash
+python -c "from retrieval import RetrievalPipeline; p = RetrievalPipeline(); print('Vectors exist:', p.validate_collection())"
+```
 
-Railway offers free deployment with generous limits.
+---
 
-### Option A: Deploy via GitHub
+## Step 3: Deploy to Render (Recommended)
 
-1. Go to https://railway.app/
-2. Sign in with GitHub
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your repository
-5. Set the root directory to `database`
-6. Add environment variables:
-   - `COHERE_API_KEY`
-   - `QDRANT_URL`
-   - `QDRANT_API_KEY`
-   - `OPENAI_API_KEY`
-7. Railway will auto-deploy
+### 3.1 Create Render Account
+- Go to https://render.com/
+- Sign up with GitHub (recommended for easy repo access)
 
-### Option B: Deploy via CLI
+### 3.2 Create New Web Service
+
+1. Click **"New +"** → **"Web Service"**
+2. Connect your GitHub account if not already connected
+3. Select your **AI_Book** repository
+4. Configure the service:
+
+| Setting | Value |
+|---------|-------|
+| **Name** | `rag-chatbot-api` |
+| **Region** | Singapore (or closest to you) |
+| **Branch** | `main` |
+| **Root Directory** | `database` |
+| **Runtime** | `Python 3` |
+| **Build Command** | `pip install -r requirements.txt` |
+| **Start Command** | `uvicorn app:app --host 0.0.0.0 --port $PORT` |
+| **Instance Type** | Free |
+
+### 3.3 Add Environment Variables
+
+Click **"Advanced"** or go to **Environment** tab and add:
+
+| Key | Value |
+|-----|-------|
+| `COHERE_API_KEY` | Your Cohere API key |
+| `QDRANT_URL` | `https://xxx.cloud.qdrant.io:6333` |
+| `QDRANT_API_KEY` | Your Qdrant API key |
+| `OPENAI_API_KEY` | Your OpenAI API key |
+| `PYTHON_VERSION` | `3.11.0` |
+
+### 3.4 Deploy
+
+- Click **"Create Web Service"**
+- Wait for build (2-5 minutes)
+- You'll get a URL like: `https://rag-chatbot-api.onrender.com`
+
+### 3.5 Test Your Deployment
 
 ```bash
-# Install Railway CLI
-npm install -g @railway/cli
+# Health check
+curl https://rag-chatbot-api.onrender.com/health
 
-# Login
-railway login
-
-# Create project
-railway init
-
-# Set environment variables
-railway variables set COHERE_API_KEY=your-key
-railway variables set QDRANT_URL=your-qdrant-url
-railway variables set QDRANT_API_KEY=your-qdrant-key
-railway variables set OPENAI_API_KEY=your-openai-key
-
-# Deploy
-railway up
+# Test a question
+curl -X POST https://rag-chatbot-api.onrender.com/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is ROS 2?"}'
 ```
+
+---
 
 ## Step 4: Update Frontend Configuration
 
-Once deployed, update `docusaurus.config.js` with your Railway URL:
+Edit `docusaurus.config.js` to point to your Render URL:
 
 ```javascript
 plugins: [
   [
     './src/plugins/docusaurus-plugin-chatbot',
     {
-      apiUrl: 'https://your-app.railway.app',  // Your Railway URL
+      apiUrl: 'https://rag-chatbot-api.onrender.com',  // Your Render URL
     },
   ],
 ],
 ```
 
-Or set it via environment variable in your build:
-
+Then commit and push:
 ```bash
-RAG_CHATBOT_API_URL=https://your-app.railway.app npm run build
+git add docusaurus.config.js
+git commit -m "Update chatbot API URL to Render deployment"
+git push origin main
 ```
 
-## Alternative: Deploy to Render
+GitHub Actions will rebuild and deploy your site.
 
-1. Go to https://render.com/
-2. Create a new Web Service
-3. Connect your GitHub repo
-4. Set:
-   - Root Directory: `database`
-   - Build Command: `pip install -r requirements.txt`
-   - Start Command: `uvicorn api:app --host 0.0.0.0 --port $PORT`
-5. Add environment variables
-6. Deploy
+---
 
-## Alternative: Deploy to Fly.io
+## RAG Guarantees Checklist
 
-```bash
-# Install flyctl
-curl -L https://fly.io/install.sh | sh
+Ensure these are maintained:
 
-# Login
-fly auth login
+- [ ] **Backend owns all prompting** - Frontend sends only `{ question, context?, top_k? }`
+- [ ] **Frontend renders verbatim** - No modification of backend responses
+- [ ] **Citations from backend** - Frontend only parses `[N]` markers, URLs come from backend
+- [ ] **Full context sent** - Text selection sends complete text, truncation is UI-only
+- [ ] **No fallback answers** - Frontend shows error if backend fails, never generates own answers
 
-# Create app (from database directory)
-cd database
-fly launch
+---
 
-# Set secrets
-fly secrets set COHERE_API_KEY=xxx QDRANT_URL=xxx QDRANT_API_KEY=xxx OPENAI_API_KEY=xxx
+## Render Free Tier Notes
 
-# Deploy
-fly deploy
-```
+| Limit | Value |
+|-------|-------|
+| **Cold Starts** | Service sleeps after 15 min idle, ~30-60s wake time |
+| **Build Minutes** | 750/month free |
+| **Bandwidth** | 100 GB/month free |
+| **RAM** | 512 MB |
 
-## Local Development
+**Tip**: The first request after idle will be slow. Consider upgrading to Starter ($7/month) for always-on.
 
-For local testing:
+---
 
-```bash
-cd database
+## Troubleshooting
 
-# Install dependencies
-pip install -r requirements.txt
-# Or with uv: uv sync
+### Build Fails
+- Check `requirements.txt` has all dependencies
+- Verify `Root Directory` is set to `database`
 
-# Start server
-uvicorn api:app --reload --port 8000
+### Health Check Fails
+- Ensure `/health` endpoint returns 200
+- Check environment variables are set
+- Look at Render logs for errors
 
-# Test the API
-curl http://localhost:8000/health
-curl -X POST http://localhost:8000/ask \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is ROS 2?"}'
-```
+### "Vector database unavailable"
+- Verify `QDRANT_URL` and `QDRANT_API_KEY` are correct
+- Check Qdrant cluster is running
+- Ensure you ran `python main.py` to populate embeddings
+
+### "No results found"
+- Run embedding pipeline: `python main.py`
+- Verify your site is accessible at the URL in `main.py`
+
+### CORS Errors
+- API has CORS enabled for all origins (`*`)
+- If issues persist, check browser console for specific error
+
+### Chatbot Shows Error
+- Check Render logs for backend errors
+- Verify OpenAI API key has credits
+- Test API directly with curl
+
+---
 
 ## Environment Variables Reference
 
@@ -167,23 +206,25 @@ curl -X POST http://localhost:8000/ask \
 | `QDRANT_URL` | Yes | Qdrant Cloud cluster URL |
 | `QDRANT_API_KEY` | Yes | Qdrant Cloud API key |
 | `OPENAI_API_KEY` | Yes | OpenAI API key for generation |
-| `PORT` | Auto | Port for the server (set by platform) |
+| `PORT` | Auto | Set by Render automatically |
+| `PYTHON_VERSION` | Recommended | `3.11.0` |
 
-## Troubleshooting
+---
 
-### "Vector database unavailable"
-- Check your `QDRANT_URL` and `QDRANT_API_KEY`
-- Ensure your Qdrant cluster is running
-- Make sure you've run the embedding pipeline
+## Local Development
 
-### "No results found"
-- Run the embedding pipeline: `python main.py`
-- Check that your documentation site is accessible
+```bash
+cd database
 
-### "Generation failed"
-- Verify your `OPENAI_API_KEY` is valid
-- Check your OpenAI account has credits
+# Install dependencies
+pip install -r requirements.txt
 
-### CORS errors
-- The API has CORS enabled for all origins
-- For production, update `allow_origins` in `api.py`
+# Start server
+uvicorn app:app --reload --port 8000
+
+# Test
+curl http://localhost:8000/health
+curl -X POST http://localhost:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What is ROS 2?"}'
+```

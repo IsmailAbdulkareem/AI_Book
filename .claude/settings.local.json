@@ -63,7 +63,8 @@
       "mcp__github__list_commits",
       "WebFetch(domain:ismailabdulkareem.github.io)",
       "mcp__github__search_issues",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "WebFetch(domain:ai-book-h6kj.onrender.com)"
     ],
     "deny": [],
     "ask": []

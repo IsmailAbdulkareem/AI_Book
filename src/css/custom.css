@@ -26,3 +26,60 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* ==================== Mobile Layout Fix ==================== */
+/* Prevent horizontal overflow causing blank space on right */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Fix any elements that might overflow */
+.main-wrapper,
+.container,
+main,
+article,
+.markdown,
+.theme-doc-markdown {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix code blocks overflow on mobile */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Fix tables on mobile */
+table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  /* Additional mobile fixes */
+  .hero {
+    padding: 2rem 1rem;
+  }
+
+  .hero__title {
+    font-size: 2rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+  }
+
+  /* Prevent any fixed-width elements from breaking layout */
+  * {
+    max-width: 100vw;
+  }
+}

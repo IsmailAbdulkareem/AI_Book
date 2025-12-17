@@ -3,8 +3,9 @@
  *
  * Monitors text selection events and returns selection data
  * when selection is within the content area.
+ * Supports both desktop (mouse) and mobile (touch) devices.
  */
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Selectors for valid content areas
 const CONTENT_SELECTORS = [
@@ -13,6 +14,13 @@ const CONTENT_SELECTORS = [
   '.markdown',
   '[class*="docItemContainer"]',
 ];
+
+/**
+ * Check if device is touch-enabled
+ */
+function isTouchDevice() {
+  return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+}
 
 /**
  * Check if an element is within a valid content area
@@ -67,78 +75,123 @@ function truncateForDisplay(text, maxLength = 1000) {
 
 export function useTextSelection() {
   const [selection, setSelection] = useState(null);
+  const selectionCheckInterval = useRef(null);
 
   const clearSelection = useCallback(() => {
     setSelection(null);
   }, []);
 
-  useEffect(() => {
-    const handleSelectionChange = () => {
-      const windowSelection = window.getSelection();
+  /**
+   * Process the current selection and update state
+   */
+  const processSelection = useCallback(() => {
+    const windowSelection = window.getSelection();
 
-      // Check if there's a valid selection
-      if (!windowSelection || windowSelection.isCollapsed || !windowSelection.toString().trim()) {
-        // Don't clear immediately - let mouseup handle it
-        return;
-      }
+    // Check if there's a valid selection
+    if (!windowSelection || windowSelection.isCollapsed) {
+      return false;
+    }
+
+    const selectedText = windowSelection.toString().trim();
+    if (!selectedText || selectedText.length < 3) {
+      return false;
+    }
+
+    // Get the anchor node (where selection started)
+    const anchorNode = windowSelection.anchorNode;
+    const anchorElement = anchorNode?.nodeType === Node.TEXT_NODE
+      ? anchorNode.parentElement
+      : anchorNode;
+
+    // Check if selection is within valid content area
+    if (!isWithinContentArea(anchorElement)) {
+      return false;
+    }
+
+    // Check if selection is within excluded areas
+    if (isWithinExcludedArea(anchorElement)) {
+      return false;
+    }
+
+    // Get selection range for positioning
+    const range = windowSelection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    // Calculate position for the button
+    // On mobile, position below the selection to avoid OS selection handles
+    const isMobile = isTouchDevice();
+    const position = {
+      x: rect.left + rect.width / 2,
+      y: isMobile ? rect.bottom + 10 : rect.top - 10,
     };
 
-    const handleMouseUp = (e) => {
-      // Small delay to allow selection to complete
+    setSelection({
+      text: selectedText,
+      truncatedText: truncateForDisplay(selectedText),
+      position,
+      isWithinContentArea: true,
+    });
+
+    return true;
+  }, []);
+
+  useEffect(() => {
+    /**
+     * Handle selection change - used for mobile devices
+     * On mobile, this fires when user finishes selecting text
+     */
+    const handleSelectionChange = () => {
+      // Use a small delay to let the selection stabilize
       setTimeout(() => {
         const windowSelection = window.getSelection();
 
-        // Check if there's a valid selection
-        if (!windowSelection || windowSelection.isCollapsed) {
-          setSelection(null);
+        // If there's no selection or it's collapsed, clear our state
+        if (!windowSelection || windowSelection.isCollapsed || !windowSelection.toString().trim()) {
+          // Don't immediately clear on mobile - user might still be selecting
+          if (!isTouchDevice()) {
+            // On desktop, we rely on mouseup
+          }
           return;
         }
 
-        const selectedText = windowSelection.toString().trim();
-        if (!selectedText || selectedText.length < 3) {
-          setSelection(null);
-          return;
+        // On mobile, process selection on selectionchange
+        if (isTouchDevice()) {
+          processSelection();
         }
+      }, 100);
+    };
 
-        // Get the anchor node (where selection started)
-        const anchorNode = windowSelection.anchorNode;
-        const anchorElement = anchorNode?.nodeType === Node.TEXT_NODE
-          ? anchorNode.parentElement
-          : anchorNode;
+    /**
+     * Handle mouse up - primary handler for desktop
+     */
+    const handleMouseUp = (e) => {
+      // Skip on touch devices - use selectionchange instead
+      if (isTouchDevice()) {
+        return;
+      }
 
-        // Check if selection is within valid content area
-        if (!isWithinContentArea(anchorElement)) {
+      // Small delay to allow selection to complete
+      setTimeout(() => {
+        if (!processSelection()) {
           setSelection(null);
-          return;
         }
-
-        // Check if selection is within excluded areas
-        if (isWithinExcludedArea(anchorElement)) {
-          setSelection(null);
-          return;
-        }
-
-        // Get selection range for positioning
-        const range = windowSelection.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-
-        // Calculate position for the button
-        const position = {
-          x: rect.left + rect.width / 2,
-          y: rect.top - 10, // Above the selection
-        };
-
-        setSelection({
-          text: selectedText,
-          truncatedText: truncateForDisplay(selectedText),
-          position,
-          isWithinContentArea: true,
-        });
       }, 10);
     };
 
-    const handleMouseDown = (e) => {
-      // Clear selection if clicking outside of it
+    /**
+     * Handle touch end - for mobile devices
+     */
+    const handleTouchEnd = (e) => {
+      // Longer delay for mobile to allow native selection UI to appear
+      setTimeout(() => {
+        processSelection();
+      }, 300);
+    };
+
+    /**
+     * Handle mouse/touch down - clear selection when clicking elsewhere
+     */
+    const handlePointerDown = (e) => {
       if (selection) {
         const target = e.target;
         // Don't clear if clicking on the Ask AI button
@@ -149,25 +202,47 @@ export function useTextSelection() {
       }
     };
 
+    /**
+     * Handle scroll - clear selection as position would be stale
+     */
     const handleScroll = () => {
-      // Clear selection on scroll as position would be stale
       if (selection) {
         setSelection(null);
       }
     };
 
+    // Start interval to check for selection on mobile
+    // This helps catch selections that don't trigger events properly
+    if (isTouchDevice()) {
+      selectionCheckInterval.current = setInterval(() => {
+        const windowSelection = window.getSelection();
+        if (windowSelection && !windowSelection.isCollapsed && windowSelection.toString().trim().length >= 3) {
+          processSelection();
+        }
+      }, 500);
+    }
+
+    // Add event listeners
     document.addEventListener('selectionchange', handleSelectionChange);
     document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
     window.addEventListener('scroll', handleScroll, true);
 
     return () => {
+      // Clean up
+      if (selectionCheckInterval.current) {
+        clearInterval(selectionCheckInterval.current);
+      }
       document.removeEventListener('selectionchange', handleSelectionChange);
       document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
       window.removeEventListener('scroll', handleScroll, true);
     };
-  }, [selection]);
+  }, [selection, processSelection]);
 
   return {
     selection,

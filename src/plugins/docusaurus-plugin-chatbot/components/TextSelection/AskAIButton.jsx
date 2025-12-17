@@ -2,32 +2,41 @@
  * AskAIButton Component
  *
  * Floating button that appears near text selection.
- * Clicking sends selected text to the chatbot as context.
+ * Clicking/tapping sends selected text to the chatbot as context.
+ * Supports both desktop and mobile touch devices.
  */
 import React from 'react';
 
 const buttonStyles = {
   position: 'fixed',
-  padding: '8px 12px',
-  background: 'var(--ifm-color-primary, #3578e5)',
+  padding: '10px 16px',
+  background: '#25c2a0',
   color: 'white',
   border: 'none',
-  borderRadius: '6px',
+  borderRadius: '20px',
   cursor: 'pointer',
-  fontSize: '13px',
-  fontWeight: '500',
-  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-  zIndex: 1001,
+  fontSize: '14px',
+  fontWeight: '600',
+  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+  zIndex: 10001,
   display: 'flex',
   alignItems: 'center',
   gap: '6px',
   transition: 'transform 0.15s ease, box-shadow 0.15s ease',
   whiteSpace: 'nowrap',
+  // Touch-friendly tap target
+  minHeight: '44px',
+  minWidth: '44px',
+  // Prevent text selection on the button
+  userSelect: 'none',
+  WebkitUserSelect: 'none',
+  // Prevent touch callout on iOS
+  WebkitTouchCallout: 'none',
 };
 
 const hoverStyles = {
-  transform: 'scale(1.02)',
-  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+  transform: 'scale(1.05)',
+  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.3)',
 };
 
 /**
@@ -36,8 +45,8 @@ const hoverStyles = {
 function SparkleIcon() {
   return (
     <svg
-      width="14"
-      height="14"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="currentColor"
       aria-hidden="true"
@@ -50,19 +59,32 @@ function SparkleIcon() {
 export function AskAIButton({ position, onClick }) {
   const [isHovered, setIsHovered] = React.useState(false);
 
+  // Handle both click and touch
+  const handleInteraction = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onClick();
+  };
+
   // Calculate position ensuring button stays within viewport
+  // Account for button size (~100px width, ~44px height)
+  const buttonWidth = 100;
+  const buttonHeight = 44;
+  const padding = 10;
+
   const style = {
     ...buttonStyles,
     ...(isHovered ? hoverStyles : {}),
-    left: Math.max(10, Math.min(position.x - 50, window.innerWidth - 120)),
-    top: Math.max(10, position.y - 40),
+    left: Math.max(padding, Math.min(position.x - buttonWidth / 2, window.innerWidth - buttonWidth - padding)),
+    top: Math.max(padding, Math.min(position.y, window.innerHeight - buttonHeight - padding)),
   };
 
   return (
     <button
       data-ask-ai-button
       style={style}
-      onClick={onClick}
+      onClick={handleInteraction}
+      onTouchEnd={handleInteraction}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       aria-label="Ask AI about selected text"

@@ -33,7 +33,7 @@ const config = {
     [
       './src/plugins/docusaurus-plugin-chatbot',
       {
-        apiUrl: process.env.RAG_CHATBOT_API_URL || 'http://localhost:8000',
+        apiUrl: 'https://ai-book-h6kj.onrender.com',
       },
     ],
   ],

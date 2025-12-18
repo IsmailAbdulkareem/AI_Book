@@ -450,6 +450,158 @@
   }
 }
 
+/* ==================== Markdown Content ==================== */
+.markdownContent {
+  width: 100%;
+}
+
+.markdownParagraph {
+  margin: 0 0 8px 0;
+  line-height: 1.6;
+}
+
+.markdownParagraph:last-child {
+  margin-bottom: 0;
+}
+
+.markdownHeader {
+  margin: 12px 0 8px 0;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdownList {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.markdownList li {
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.markdownLink {
+  color: var(--ifm-color-primary, #3578e5);
+  text-decoration: underline;
+}
+
+.markdownLink:hover {
+  color: var(--ifm-color-primary-dark, #2c6dd0);
+}
+
+/* ==================== Code Blocks ==================== */
+.codeBlock {
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
+  overflow-x: auto;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.codeBlock code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.inlineCode {
+  background: rgba(0, 0, 0, 0.1);
+  color: #e83e8c;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+/* ==================== Citation Markers ==================== */
+.citationMarker {
+  color: var(--ifm-color-primary, #3578e5);
+  font-weight: 600;
+  font-size: 0.85em;
+  vertical-align: super;
+}
+
+/* ==================== Collapsible References ==================== */
+.referencesContainer {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.referencesToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ifm-color-primary, #3578e5);
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.referencesToggle:hover {
+  background: rgba(53, 120, 229, 0.1);
+}
+
+.referencesIcon {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.referencesContent {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+}
+
+.referenceItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.referenceItem:last-of-type {
+  margin-bottom: 0;
+}
+
+.referenceNumber {
+  color: var(--ifm-color-primary, #3578e5);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.referenceLink {
+  color: var(--ifm-color-emphasis-700, #555);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.referenceLink:hover {
+  color: var(--ifm-color-primary, #3578e5);
+  text-decoration: underline;
+}
+
+.referenceTiming {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+  font-size: 10px;
+  color: var(--ifm-color-emphasis-500, #888);
+}
+
 /* ==================== Dark Mode Support ==================== */
 [data-theme='dark'] .chatPanel {
   background-color: #1b1b1d;
@@ -500,4 +652,35 @@
 [data-theme='dark'] .welcomeTitle,
 [data-theme='dark'] .welcomeText {
   color: #e0e0e0;
+}
+
+/* Dark mode for markdown content */
+[data-theme='dark'] .inlineCode {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8a4c4;
+}
+
+[data-theme='dark'] .referencesContainer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .referencesToggle:hover {
+  background: rgba(53, 120, 229, 0.2);
+}
+
+[data-theme='dark'] .referencesContent {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .referenceLink {
+  color: #a0a0a0;
+}
+
+[data-theme='dark'] .referenceLink:hover {
+  color: var(--ifm-color-primary-light, #4d9cff);
+}
+
+[data-theme='dark'] .referenceTiming {
+  border-top-color: rgba(255, 255, 255, 0.1);
+  color: #888;
 }

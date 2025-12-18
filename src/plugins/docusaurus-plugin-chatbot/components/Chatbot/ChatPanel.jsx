@@ -7,7 +7,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styles from './styles.module.css';
 import Message from './Message';
-import SourceList from './SourceList';
 import { useApiClient } from './hooks/useApiClient';
 import { useChatSession } from './hooks/useChatSession';
 
@@ -228,12 +227,7 @@ export function ChatPanel({ onClose, selectedContext, onClearContext }) {
         ) : (
           <>
             {messages.map((msg, index) => (
-              <React.Fragment key={msg.id || index}>
-                <Message message={msg} />
-                {msg.role === 'assistant' && msg.sources && msg.sources.length > 0 && (
-                  <SourceList sources={msg.sources} timing={msg.timing} />
-                )}
-              </React.Fragment>
+              <Message key={msg.id || index} message={msg} />
             ))}
           </>
         )}

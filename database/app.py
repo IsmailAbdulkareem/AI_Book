@@ -93,12 +93,16 @@ IMPORTANT RULES:
 3. Always cite sources by their number [1], [2], etc.
 4. Be concise and accurate
 5. Do not make up information not in the context
+6. When [User Selected Text] is provided, the user is asking about THAT specific text. Commands like "explain", "summarize", "what is this" refer to the selected text.
 
 Context will be provided in the format:
-[1] Content...
+[User Selected Text] (optional - text the user highlighted on the page)
+The selected text...
+
+[1] Content from the book...
 Source: URL
 
-Use this context to answer the user's question."""
+Use this context to answer the user's question. If the user selected text and asks to "explain" or similar, explain that selected text using the book context."""
 
 
 # =============================================================================
@@ -121,7 +125,7 @@ def format_context(results: List[QueryResult], user_context: Optional[str] = Non
     return "\n\n".join(context_parts) if context_parts else ""
 
 
-def generate_answer(question: str, context: str) -> tuple[str, int]:
+def generate_answer(question: str, context: str, has_user_selection: bool = False) -> tuple[str, int]:
     """Generate a grounded answer using OpenAI."""
     client = OpenAI()
 
@@ -130,7 +134,11 @@ def generate_answer(question: str, context: str) -> tuple[str, int]:
     if not context:
         user_content = f"Question: {question}\n\nNote: No relevant context was found in the book."
     else:
-        user_content = f"Context:\n{context}\n\nQuestion: {question}"
+        # If user selected text and asked a short command, make the intent clear
+        if has_user_selection and len(question.split()) <= 3:
+            user_content = f"Context:\n{context}\n\nThe user selected some text and wants you to: {question}"
+        else:
+            user_content = f"Context:\n{context}\n\nQuestion: {question}"
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -198,7 +206,11 @@ async def ask_question(request: AskRequest):
 
     # Generate answer
     try:
-        answer, generation_time_ms = generate_answer(request.question, context)
+        answer, generation_time_ms = generate_answer(
+            request.question,
+            context,
+            has_user_selection=bool(request.context)
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
 

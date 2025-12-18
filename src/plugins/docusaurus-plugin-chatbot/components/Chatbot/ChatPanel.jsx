@@ -110,17 +110,14 @@ export function ChatPanel({ onClose, selectedContext, onClearContext }) {
     inputRef.current?.focus();
   }, []);
 
-  // Handle keyboard shortcuts
-  const handleKeyDown = useCallback(
+  // Handle keyboard shortcuts for panel (Escape only)
+  const handlePanelKeyDown = useCallback(
     (e) => {
       if (e.key === 'Escape') {
         onClose();
-      } else if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        handleSubmit();
       }
     },
-    [onClose, inputValue, isLoading]
+    [onClose]
   );
 
   // Submit question to API
@@ -171,6 +168,18 @@ export function ChatPanel({ onClose, selectedContext, onClearContext }) {
     }
   }, [inputValue, isLoading, askQuestion, addMessage, selectedContext, onClearContext, clearError, error]);
 
+  // Handle keyboard shortcuts for input (Enter to submit)
+  // Must be defined after handleSubmit
+  const handleInputKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSubmit();
+      }
+    },
+    [handleSubmit]
+  );
+
   // Handle example question click
   const handleExampleClick = useCallback((question) => {
     setInputValue(question);
@@ -197,7 +206,7 @@ export function ChatPanel({ onClose, selectedContext, onClearContext }) {
       className={styles.chatPanel}
       role="dialog"
       aria-label="Chat with AI assistant"
-      onKeyDown={handleKeyDown}
+      onKeyDown={handlePanelKeyDown}
     >
       {/* Header */}
       <div className={styles.panelHeader}>
@@ -253,7 +262,7 @@ export function ChatPanel({ onClose, selectedContext, onClearContext }) {
             className={styles.textInput}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onKeyDown={handleInputKeyDown}
             placeholder="Ask a question..."
             aria-label="Type your question"
             rows={1}

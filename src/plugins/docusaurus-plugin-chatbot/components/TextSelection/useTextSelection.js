@@ -13,6 +13,11 @@ const CONTENT_SELECTORS = [
   'article',
   '.markdown',
   '[class*="docItemContainer"]',
+  '[class*="docMainContainer"]',
+  'main',
+  // Headings with hash links
+  'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  '[class*="heading"]',
 ];
 
 /**
@@ -28,10 +33,25 @@ function isTouchDevice() {
 function isWithinContentArea(element) {
   if (!element) return false;
 
-  // Check if element or any ancestor matches content selectors
+  // Check if element matches directly (for headings, etc.)
   for (const selector of CONTENT_SELECTORS) {
-    if (element.closest(selector)) {
-      return true;
+    try {
+      if (element.matches && element.matches(selector)) {
+        return true;
+      }
+    } catch (e) {
+      // Invalid selector, skip
+    }
+  }
+
+  // Check if any ancestor matches content selectors
+  for (const selector of CONTENT_SELECTORS) {
+    try {
+      if (element.closest && element.closest(selector)) {
+        return true;
+      }
+    } catch (e) {
+      // Invalid selector, skip
     }
   }
   return false;

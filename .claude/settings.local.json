@@ -64,7 +64,10 @@
       "WebFetch(domain:ismailabdulkareem.github.io)",
       "mcp__github__search_issues",
       "Bash(grep:*)",
-      "WebFetch(domain:ai-book-h6kj.onrender.com)"
+      "WebFetch(domain:ai-book-h6kj.onrender.com)",
+      "Bash(pwsh:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File \".specify/scripts/powershell/setup-plan.ps1\" -Json)",
+      "mcp__context7__resolve-library-id"
     ],
     "deny": [],
     "ask": []

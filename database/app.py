@@ -176,9 +176,18 @@ async def ask_question(request: AskRequest):
         raise HTTPException(status_code=503, detail=f"Vector database unavailable: {str(e)}")
 
     # Search for relevant context
+    # If user provided selected text context, combine it with the question for better retrieval
     try:
         start_time = time.time()
-        response = pipeline.search(query=request.question, top_k=request.top_k)
+
+        # Build search query: include context for better semantic search
+        if request.context:
+            # Combine selected text with question for more relevant retrieval
+            search_query = f"{request.context}\n\nQuestion: {request.question}"
+        else:
+            search_query = request.question
+
+        response = pipeline.search(query=search_query, top_k=request.top_k)
         retrieval_time_ms = int((time.time() - start_time) * 1000)
         results = response.results
     except Exception as e:

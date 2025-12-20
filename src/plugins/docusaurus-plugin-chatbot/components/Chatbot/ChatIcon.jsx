@@ -30,14 +30,15 @@ function CloseIcon() {
   return <span className={styles.chatIconClose} aria-hidden="true">×</span>;
 }
 
-export function ChatIcon({ isOpen, onClick }) {
+export function ChatIcon({ isOpen, onClick, isLoading = false }) {
   return (
     <button
-      className={styles.chatIcon}
+      className={`${styles.chatIcon} ${isLoading ? styles.chatIconLoading : ''}`}
       onClick={onClick}
       aria-label={isOpen ? 'Close chat' : 'Open chat'}
       aria-expanded={isOpen}
       type="button"
+      disabled={isLoading}
     >
       {isOpen ? <CloseIcon /> : <ChatBubbleIcon />}
     </button>

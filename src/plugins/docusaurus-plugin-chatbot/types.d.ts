@@ -89,3 +89,78 @@ export interface UseTextSelectionReturn {
   selection: TextSelection | null;
   clearSelection: () => void;
 }
+
+// ============================================================================
+// Authentication Types (Better Auth)
+// ============================================================================
+
+// Programming level enum
+export type ProgrammingLevel = "beginner" | "intermediate" | "advanced";
+
+// Hardware access level enum
+export type HardwareAccess = "none" | "simulator_only" | "real_robots";
+
+// Technology options
+export type TechnologyOption = "Python" | "JS" | "ROS2" | "AI/ML" | "Web" | "Other";
+
+// Device options
+export type DeviceOption = "Jetson" | "Raspberry Pi" | "Arduino" | "GPU" | "Other";
+
+// User profile stored in Better Auth additionalFields
+export interface UserProfile {
+  programmingLevel: ProgrammingLevel;
+  technologies: string; // JSON string array: '["Python", "ROS2"]'
+  aiRoboticsExperience: boolean;
+  hardwareAccess: HardwareAccess;
+  devicesOwned?: string; // JSON string array (optional)
+}
+
+// User from Better Auth session
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  image?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  // Profile fields from additionalFields
+  programmingLevel: ProgrammingLevel;
+  technologies: string; // JSON string
+  aiRoboticsExperience: boolean;
+  hardwareAccess: HardwareAccess;
+  devicesOwned?: string; // JSON string
+}
+
+// Auth session from Better Auth
+export interface AuthSession {
+  user: AuthUser;
+  session: {
+    id: string;
+    userId: string;
+    expiresAt: Date;
+  };
+}
+
+// Auth context state
+export interface AuthContextType {
+  session: AuthSession | null;
+  user: AuthUser | null;
+  isPending: boolean;
+  error: Error | null;
+  isAuthenticated: boolean;
+  isProfileComplete: boolean;
+}
+
+// User profile for /ask API (decoded from session)
+export interface UserProfilePayload {
+  programming_level: ProgrammingLevel;
+  technologies: string[]; // Decoded array
+  hardware_access: HardwareAccess;
+}
+
+// Extended ChatRequest with user context
+export interface AuthenticatedChatRequest extends ChatRequest {
+  user_id: string;
+  user_profile: UserProfilePayload;
+}

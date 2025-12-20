@@ -1,5 +1,6 @@
 import React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { AuthProvider } from '../components/Auth';
 
 // Lazy load the chatbot components to avoid SSR issues
 const ChatbotLazy = React.lazy(() => import('../components/Chatbot'));
@@ -15,13 +16,16 @@ function ChatbotWrapper() {
 }
 
 // Root theme component - wraps the entire app
+// AuthProvider wraps entire app so navbar can access auth context
 export default function Root({ children }) {
   return (
-    <>
-      {children}
-      <BrowserOnly fallback={null}>
-        {() => <ChatbotWrapper />}
-      </BrowserOnly>
-    </>
+    <BrowserOnly fallback={<>{children}</>}>
+      {() => (
+        <AuthProvider>
+          {children}
+          <ChatbotWrapper />
+        </AuthProvider>
+      )}
+    </BrowserOnly>
   );
 }

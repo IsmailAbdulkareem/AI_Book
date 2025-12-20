@@ -46,6 +46,11 @@
   line-height: 1;
 }
 
+.chatIconLoading {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 /* ==================== Chat Panel ==================== */
 .chatPanel {
   position: fixed;
@@ -93,6 +98,33 @@
   font-weight: 600;
   margin: 0;
   color: var(--ifm-font-color-base, #1c1e21);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoutButton {
+  background: none;
+  border: 1px solid var(--ifm-color-emphasis-300, #ccc);
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--ifm-color-emphasis-600, #666);
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.logoutButton:hover:not(:disabled) {
+  background: var(--ifm-color-emphasis-100, #f0f0f0);
+  border-color: var(--ifm-color-emphasis-400, #aaa);
+}
+
+.logoutButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .closeButton {
@@ -612,6 +644,16 @@
 [data-theme='dark'] .panelHeader {
   background-color: #242526;
   background: #242526;
+}
+
+[data-theme='dark'] .logoutButton {
+  border-color: #555;
+  color: #a0a0a0;
+}
+
+[data-theme='dark'] .logoutButton:hover:not(:disabled) {
+  background: #333;
+  border-color: #666;
 }
 
 [data-theme='dark'] .messagesContainer {

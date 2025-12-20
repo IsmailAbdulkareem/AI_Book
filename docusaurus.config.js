@@ -53,6 +53,10 @@ const config = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          type: 'custom-userNavbarItem',
+          position: 'right',
+        },
       ],
     },
 

@@ -2,10 +2,12 @@
 FastAPI Server - HTTP API for RAG Chatbot
 
 Spec 5: 005-frontend-chatbot-ui
+Spec 6: 006-user-auth-profiling (user context personalization)
+
 Purpose: HTTP API endpoint for the frontend chatbot UI
 
 This module provides:
-- POST /ask endpoint for questions
+- POST /ask endpoint for questions (with user context for personalization)
 - GET /health endpoint for health checks
 - CORS support for frontend access
 
@@ -25,6 +27,7 @@ from pydantic import BaseModel, Field
 from openai import OpenAI
 
 from retrieval import QueryResult, RetrievalPipeline
+from models import UserProfile
 
 # Load environment variables
 load_dotenv()
@@ -54,10 +57,18 @@ app.add_middleware(
 
 
 class AskRequest(BaseModel):
-    """Request model for /ask endpoint."""
+    """
+    Request model for /ask endpoint.
+
+    Spec 006: Extended with user_id and user_profile for personalization.
+    user_id and user_profile are REQUIRED for authenticated requests.
+    """
     question: str = Field(..., min_length=1, description="The question to ask")
     context: Optional[str] = Field(None, description="Optional selected text context")
     top_k: int = Field(5, ge=1, le=10, description="Number of sources to retrieve")
+    # User context for personalization (Spec 006)
+    user_id: str = Field(..., description="Authenticated user ID from Better Auth session")
+    user_profile: UserProfile = Field(..., description="User profile for response personalization")
 
 
 class Source(BaseModel):
@@ -105,6 +116,49 @@ Source: URL
 Use this context to answer the user's question. If the user selected text and asks to "explain" or similar, explain that selected text using the book context."""
 
 
+def build_personalized_system_prompt(user_profile: UserProfile) -> str:
+    """
+    Build a personalized system prompt based on user profile.
+
+    RAG SAFETY GUARDRAIL (Non-Negotiable):
+    - Profile affects ONLY tone, explanation depth, and examples
+    - Profile MUST NOT add facts, change retrieval, or override citations
+    - ALL facts must come from the retrieved context
+
+    Args:
+        user_profile: User profile containing programming level, technologies, hardware access
+
+    Returns:
+        Extended system prompt with personalization instructions
+    """
+    technologies_str = ", ".join(user_profile.technologies) if user_profile.technologies else "None specified"
+
+    personalization = f"""
+
+PERSONALIZATION CONTEXT (affects tone only, NOT facts):
+- User programming level: {user_profile.programming_level}
+- Familiar technologies: {technologies_str}
+- Hardware access: {user_profile.hardware_access}
+
+Adjust your explanations based on user level:
+- For beginners: Use simpler language, provide more step-by-step detail, explain terminology
+- For intermediate: Balance detail with conciseness, assume basic familiarity
+- For advanced: Be concise, assume familiarity with concepts, focus on specifics
+
+Adjust examples based on hardware access:
+- For none: Focus on conceptual understanding
+- For simulator_only: Prioritize simulation-based workflows and examples
+- For real_robots: Include practical hardware deployment considerations
+
+CRITICAL RAG SAFETY RULE:
+- Do NOT invent information based on user profile
+- ALL facts MUST come from the provided context
+- If unsure, default to the retrieved context only
+- Never say "since you have X hardware, you can try Y" unless Y is in the context"""
+
+    return SYSTEM_PROMPT + personalization
+
+
 # =============================================================================
 # Helper Functions
 # =============================================================================
@@ -125,8 +179,24 @@ def format_context(results: List[QueryResult], user_context: Optional[str] = Non
     return "\n\n".join(context_parts) if context_parts else ""
 
 
-def generate_answer(question: str, context: str, has_user_selection: bool = False) -> tuple[str, int]:
-    """Generate a grounded answer using OpenAI."""
+def generate_answer(
+    question: str,
+    context: str,
+    has_user_selection: bool = False,
+    user_profile: Optional[UserProfile] = None
+) -> tuple[str, int]:
+    """
+    Generate a grounded answer using OpenAI.
+
+    Args:
+        question: User's question
+        context: Retrieved context from RAG
+        has_user_selection: Whether user selected text
+        user_profile: Optional user profile for personalization (Spec 006)
+
+    Returns:
+        Tuple of (answer, generation_time_ms)
+    """
     client = OpenAI()
 
     start_time = time.time()
@@ -140,10 +210,17 @@ def generate_answer(question: str, context: str, has_user_selection: bool = Fals
         else:
             user_content = f"Context:\n{context}\n\nQuestion: {question}"
 
+    # Build system prompt with personalization if user profile provided
+    system_prompt = (
+        build_personalized_system_prompt(user_profile)
+        if user_profile
+        else SYSTEM_PROMPT
+    )
+
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_content},
         ],
         temperature=0.3,
@@ -172,11 +249,23 @@ async def ask_question(request: AskRequest):
     """
     Ask a question about the book content.
 
+    Spec 006: Extended with user context for personalized responses.
+
     The API will:
-    1. Search for relevant content in the vector database
-    2. Generate a grounded answer using OpenAI
-    3. Return the answer with source citations
+    1. Validate user authentication (user_id and user_profile required)
+    2. Search for relevant content in the vector database
+    3. Generate a personalized, grounded answer using OpenAI
+    4. Return the answer with source citations
+
+    Personalization affects TONE ONLY, not factual content.
+    RAG grounding is preserved - all facts come from retrieved context.
     """
+    # Spec 006: Validate user context
+    if not request.user_id:
+        raise HTTPException(status_code=401, detail="user_id is required")
+    if not request.user_profile:
+        raise HTTPException(status_code=401, detail="user_profile is required")
+
     try:
         # Initialize retrieval pipeline
         pipeline = RetrievalPipeline()
@@ -204,12 +293,13 @@ async def ask_question(request: AskRequest):
     # Format context (include user-provided context if any)
     context = format_context(results, request.context)
 
-    # Generate answer
+    # Generate answer with personalization (Spec 006)
     try:
         answer, generation_time_ms = generate_answer(
             request.question,
             context,
-            has_user_selection=bool(request.context)
+            has_user_selection=bool(request.context),
+            user_profile=request.user_profile  # Pass profile for personalization
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")

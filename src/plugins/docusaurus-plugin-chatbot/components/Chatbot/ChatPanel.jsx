@@ -3,12 +3,16 @@
  *
  * Main chat interface containing message list, input area, and controls.
  * Handles user input, API calls, and displays conversation history.
+ *
+ * Spec 006: Includes logout button in header
  */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styles from './styles.module.css';
 import Message from './Message';
 import { useApiClient } from './hooks/useApiClient';
 import { useChatSession } from './hooks/useChatSession';
+import { useAuth } from '../Auth';
+import { signOut } from '../../lib/auth-client';
 
 const EXAMPLE_QUESTIONS = [
   'What is ROS 2?',
@@ -93,11 +97,27 @@ function ContextPreview({ context, onClear }) {
 export function ChatPanel({ onClose, selectedContext, onClearContext }) {
   const [inputValue, setInputValue] = useState('');
   const [lastFailedQuestion, setLastFailedQuestion] = useState(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
   const { messages, addMessage, isLoaded } = useChatSession();
   const { askQuestion, isLoading, error, clearError } = useApiClient();
+  const { user } = useAuth();
+
+  // Handle logout (Spec 006)
+  const handleLogout = useCallback(async () => {
+    setIsLoggingOut(true);
+    try {
+      await signOut();
+      // Close the panel after logout - auth gate will re-activate
+      onClose();
+    } catch (err) {
+      console.error('Logout failed:', err);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }, [onClose]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -210,14 +230,27 @@ export function ChatPanel({ onClose, selectedContext, onClearContext }) {
       {/* Header */}
       <div className={styles.panelHeader}>
         <h2 className={styles.panelTitle}>Ask about the book</h2>
-        <button
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label="Close chat panel"
-          type="button"
-        >
-          <span aria-hidden="true">×</span>
-        </button>
+        <div className={styles.headerActions}>
+          {/* Logout button (Spec 006) */}
+          <button
+            className={styles.logoutButton}
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            aria-label="Sign out"
+            type="button"
+            title={user?.email || 'Sign out'}
+          >
+            {isLoggingOut ? '...' : 'Sign out'}
+          </button>
+          <button
+            className={styles.closeButton}
+            onClick={onClose}
+            aria-label="Close chat panel"
+            type="button"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
       </div>
 
       {/* Messages */}

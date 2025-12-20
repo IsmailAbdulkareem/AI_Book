@@ -496,18 +496,18 @@ All information must come from the provided context sources.
 
 ## Step 4: Environment Setup
 
-### Frontend (.env)
+### Frontend (auth-client.ts)
 
-```bash
-BETTER_AUTH_URL=https://your-auth-server.onrender.com
-```
+The frontend automatically detects the environment:
+- Local development: `http://localhost:3001`
+- Production (GitHub Pages): `https://ai-book-auth.onrender.com`
 
 ### Auth Server (.env)
 
 ```bash
 DATABASE_URL=postgresql://user:pass@host:5432/dbname
 BETTER_AUTH_SECRET=<32-char-random-string>
-BETTER_AUTH_URL=https://your-auth-server.onrender.com
+BETTER_AUTH_URL=http://localhost:3001  # or https://ai-book-auth.onrender.com
 PORT=3001
 ```
 
@@ -521,6 +521,15 @@ QDRANT_URL=...
 QDRANT_API_KEY=...
 # No changes needed - reads from same DATABASE_URL
 ```
+
+### Actual Deployment URLs
+
+| Service | URL |
+|---------|-----|
+| Auth Server (Production) | `https://ai-book-auth.onrender.com` |
+| Auth Server (Local) | `http://localhost:3001` |
+| Backend API | `https://ai-book-h6kj.onrender.com` |
+| Frontend | `https://ismailabdulkareem.github.io` |
 
 ---
 

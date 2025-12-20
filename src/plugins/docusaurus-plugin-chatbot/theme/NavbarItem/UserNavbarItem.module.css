@@ -1,0 +1,216 @@
+/**
+ * UserNavbarItem Styles
+ *
+ * Styles for the navbar login button and user dropdown menu.
+ * Uses Docusaurus Infima CSS variables for theme compatibility.
+ */
+
+/* ==================== Loading Skeleton ==================== */
+.skeleton {
+  width: 80px;
+  height: 32px;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 6px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ==================== Sign In Button ==================== */
+.signInButton {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  background: var(--ifm-color-primary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.signInButton:hover {
+  background: var(--ifm-color-primary-dark);
+}
+
+.signInButton:active {
+  transform: scale(0.98);
+}
+
+/* ==================== User Menu ==================== */
+.userMenu {
+  position: relative;
+}
+
+.avatarButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.avatarButton:hover {
+  border-color: var(--ifm-color-emphasis-400);
+  background: var(--ifm-color-emphasis-100);
+}
+
+.avatarImage {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarIcon {
+  width: 28px;
+  height: 28px;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ifm-font-color-base);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--ifm-color-emphasis-600);
+  transition: transform 0.2s ease;
+}
+
+.chevronUp {
+  transform: rotate(180deg);
+}
+
+/* ==================== Dropdown Menu ==================== */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--ifm-background-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  padding: 12px 16px;
+}
+
+.dropdownEmail {
+  display: block;
+  font-size: 13px;
+  color: var(--ifm-color-emphasis-700);
+  word-break: break-all;
+}
+
+.profileIncomplete {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: var(--ifm-color-warning-darkest);
+  background: var(--ifm-color-warning-lightest);
+  border-radius: 4px;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background: var(--ifm-color-emphasis-200);
+  margin: 0;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--ifm-font-color-base);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dropdownItem:hover:not(:disabled) {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.dropdownItem:disabled {
+  color: var(--ifm-color-emphasis-500);
+  cursor: not-allowed;
+}
+
+/* ==================== Dark Mode ==================== */
+[data-theme='dark'] .signInButton {
+  background: var(--ifm-color-primary);
+}
+
+[data-theme='dark'] .signInButton:hover {
+  background: var(--ifm-color-primary-light);
+}
+
+[data-theme='dark'] .avatarButton {
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .avatarButton:hover {
+  border-color: var(--ifm-color-emphasis-500);
+  background: var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .dropdown {
+  background: var(--ifm-background-surface-color);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+[data-theme='dark'] .dropdownItem:hover:not(:disabled) {
+  background: var(--ifm-color-emphasis-200);
+}
+
+/* ==================== Mobile Responsive ==================== */
+@media (max-width: 996px) {
+  .userName {
+    display: none;
+  }
+
+  .avatarButton {
+    padding: 4px;
+    border-radius: 50%;
+  }
+
+  .chevron {
+    display: none;
+  }
+}

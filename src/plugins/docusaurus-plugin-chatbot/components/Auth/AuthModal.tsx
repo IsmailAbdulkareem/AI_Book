@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signIn, signUp } from "../../lib/auth-client";
 import ProfileForm from "./ProfileForm";
 import styles from "./styles.module.css";
+
+// localStorage key for remembering email
+const REMEMBERED_EMAIL_KEY = "ai-book-remembered-email";
 
 /**
  * AuthModal Props
@@ -39,6 +42,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [name, setName] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
 
+  // Load remembered email when modal opens
+  useEffect(() => {
+    if (isOpen && typeof window !== "undefined") {
+      const savedEmail = localStorage.getItem(REMEMBERED_EMAIL_KEY);
+      if (savedEmail) {
+        setEmail(savedEmail);
+      }
+    }
+  }, [isOpen]);
+
   // Profile fields
   const [programmingLevel, setProgrammingLevel] = useState("");
   const [technologies, setTechnologies] = useState<string[]>([]);
@@ -47,10 +60,10 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [devicesOwned, setDevicesOwned] = useState<string[]>([]);
   const [image, setImage] = useState<string | null>(null);
 
-  // Reset form state
+  // Reset form state (keeps remembered email)
   const resetForm = () => {
-    setEmail("");
-    setPassword("");
+    // Don't clear email - it will be loaded from localStorage on next open
+    setPassword(""); // Always clear password for security
     setName("");
     setProgrammingLevel("");
     setTechnologies([]);
@@ -135,6 +148,10 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         // Don't reveal which field was incorrect
         setError("Invalid email or password");
       } else {
+        // Save email for next login if "Remember me" is checked
+        if (rememberMe && typeof window !== "undefined") {
+          localStorage.setItem(REMEMBERED_EMAIL_KEY, email.trim());
+        }
         handleClose();
         onSuccess?.();
       }
@@ -185,6 +202,10 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         // Go back to signup form if error
         setMode("signup");
       } else {
+        // Save email for next login
+        if (typeof window !== "undefined") {
+          localStorage.setItem(REMEMBERED_EMAIL_KEY, email.trim());
+        }
         // Success: user is automatically logged in (session cookie set)
         handleClose();
         onSuccess?.();

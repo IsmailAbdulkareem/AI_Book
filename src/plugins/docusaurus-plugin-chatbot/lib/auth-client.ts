@@ -16,7 +16,7 @@ const AUTH_SERVER_URL =
   typeof window !== "undefined"
     ? // Browser: check for production domain
       window.location.hostname === "ismailabdulkareem.github.io"
-      ? "https://ai-book-auth.onrender.com" // Production auth server
+      ? "https://ai-book-1.onrender.com" // Production auth server
       : "http://localhost:3001" // Local development
     : "http://localhost:3001"; // SSR fallback
 

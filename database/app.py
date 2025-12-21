@@ -71,29 +71,6 @@ META_PATTERNS = [
     r"tell\s+me\s+about\s+(yourself|you)",
 ]
 
-# Pre-defined responses for greetings
-GREETING_RESPONSES = [
-    "Hello! I'm here to help you with questions about the Physical AI & Humanoid Robotics book. What would you like to know?",
-    "Hi! Feel free to ask me anything about the book content.",
-    "Hey there! I can answer questions about topics covered in the Physical AI & Humanoid Robotics book. What interests you?",
-]
-
-# Pre-defined response for meta questions
-META_RESPONSE = """I'm a book-focused assistant for the **Physical AI & Humanoid Robotics** book.
-
-**What I can do:**
-- Answer questions about topics covered in the book
-- Provide explanations with citations to specific sections
-- Help you understand concepts from the book content
-
-**What I cannot do:**
-- Answer questions outside the book's scope
-- Provide information not found in the book
-- Make up or speculate beyond the source material
-
-Just ask me a question about the book, and I'll find the relevant information with source citations!"""
-
-
 def detect_intent(message: str) -> MessageIntent:
     """Detect the intent of a user message.
 
@@ -121,15 +98,51 @@ def detect_intent(message: str) -> MessageIntent:
     return MessageIntent.CONTENT
 
 
-def get_greeting_response() -> str:
-    """Get a response for greeting messages."""
-    import random
-    return random.choice(GREETING_RESPONSES)
+def generate_conversational_response(message: str, intent: MessageIntent) -> tuple[str, int]:
+    """Generate a natural conversational response using OpenAI for greetings/meta questions.
 
+    Args:
+        message: The user's message
+        intent: The detected intent (GREETING or META)
 
-def get_meta_response() -> str:
-    """Get a response for meta questions about the chatbot."""
-    return META_RESPONSE
+    Returns:
+        Tuple of (response text, generation time in ms)
+    """
+    client = OpenAI()
+    start_time = time.time()
+
+    if intent == MessageIntent.GREETING:
+        system_prompt = """You are a friendly assistant for the Physical AI & Humanoid Robotics book.
+
+The user is greeting you or making casual conversation. Respond naturally and warmly, then invite them to ask questions about the book.
+
+Keep your response brief (1-2 sentences). Be friendly and conversational.
+Remember: You can ONLY answer questions about this specific book's content."""
+    else:  # META
+        system_prompt = """You are a helpful assistant for the Physical AI & Humanoid Robotics book.
+
+The user is asking about your capabilities or how you work. Explain clearly:
+- You answer questions ONLY about this specific book
+- Your answers are grounded in the book content with citations
+- You cannot answer questions outside the book's scope
+- You cannot make up information
+
+Be helpful and encourage them to ask questions about the book."""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": message},
+        ],
+        temperature=0.7,  # Slightly more creative for conversational responses
+        max_tokens=200,
+    )
+
+    generation_time_ms = int((time.time() - start_time) * 1000)
+    answer = response.choices[0].message.content or ""
+
+    return answer, generation_time_ms
 
 # Load environment variables
 load_dotenv()
@@ -372,25 +385,22 @@ async def ask_question(request: AskRequest):
     # ==========================================================================
     intent = detect_intent(request.question)
 
-    # Handle greetings (hi, hello, thanks, etc.) - no RAG needed
-    if intent == MessageIntent.GREETING:
-        return AskResponse(
-            question=request.question,
-            answer=get_greeting_response(),
-            sources=[],
-            retrieval_time_ms=0,
-            generation_time_ms=0,
-        )
-
-    # Handle meta questions (what can you do, how do you work, etc.)
-    if intent == MessageIntent.META:
-        return AskResponse(
-            question=request.question,
-            answer=get_meta_response(),
-            sources=[],
-            retrieval_time_ms=0,
-            generation_time_ms=0,
-        )
+    # Handle greetings and meta questions - use LLM but no RAG
+    if intent in (MessageIntent.GREETING, MessageIntent.META):
+        try:
+            answer, generation_time_ms = generate_conversational_response(
+                request.question, intent
+            )
+            return AskResponse(
+                question=request.question,
+                answer=answer,
+                sources=[],
+                retrieval_time_ms=0,
+                generation_time_ms=generation_time_ms,
+            )
+        except Exception as e:
+            # Fallback if OpenAI fails for conversational response
+            raise HTTPException(status_code=500, detail=f"Generation failed: {str(e)}")
 
     # ==========================================================================
     # Step 2: Content questions - Use full RAG pipeline

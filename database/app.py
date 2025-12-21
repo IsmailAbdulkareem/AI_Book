@@ -17,8 +17,10 @@ Usage:
 """
 
 import os
+import re
 import time
 from typing import List, Optional
+from enum import Enum
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -28,6 +30,106 @@ from openai import OpenAI
 
 from retrieval import QueryResult, RetrievalPipeline
 from models import UserProfile
+
+
+# =============================================================================
+# Intent Detection
+# =============================================================================
+
+class MessageIntent(str, Enum):
+    """Classification of user message intent."""
+    GREETING = "greeting"
+    META = "meta"  # Questions about the chatbot itself
+    CONTENT = "content"  # Actual book-related questions
+
+
+# Greeting patterns (case-insensitive)
+GREETING_PATTERNS = [
+    r"^hi$", r"^hello$", r"^hey$", r"^howdy$",
+    r"^hi[!.,\s]", r"^hello[!.,\s]", r"^hey[!.,\s]",
+    r"^good\s*(morning|afternoon|evening|day)",
+    r"^greetings",
+    r"^thanks?$", r"^thank\s*you",
+    r"^ok$", r"^okay$", r"^sure$", r"^yes$", r"^no$",
+    r"^cool$", r"^nice$", r"^great$", r"^good$", r"^awesome$",
+    r"^bye$", r"^goodbye$", r"^see\s*you",
+    r"^sup$", r"^what'?s\s*up",
+]
+
+# Meta question patterns (questions about the chatbot)
+META_PATTERNS = [
+    r"what\s+can\s+you\s+do",
+    r"how\s+do(es)?\s+(this|you)\s+work",
+    r"what\s+are\s+you",
+    r"who\s+are\s+you",
+    r"what\s+is\s+this",
+    r"help\s*$", r"^help\s+me",
+    r"what\s+topics?\s+(can|do)\s+you",
+    r"what\s+questions?\s+can\s+i\s+ask",
+    r"how\s+can\s+you\s+help",
+    r"what\s+do\s+you\s+know",
+    r"tell\s+me\s+about\s+(yourself|you)",
+]
+
+# Pre-defined responses for greetings
+GREETING_RESPONSES = [
+    "Hello! I'm here to help you with questions about the Physical AI & Humanoid Robotics book. What would you like to know?",
+    "Hi! Feel free to ask me anything about the book content.",
+    "Hey there! I can answer questions about topics covered in the Physical AI & Humanoid Robotics book. What interests you?",
+]
+
+# Pre-defined response for meta questions
+META_RESPONSE = """I'm a book-focused assistant for the **Physical AI & Humanoid Robotics** book.
+
+**What I can do:**
+- Answer questions about topics covered in the book
+- Provide explanations with citations to specific sections
+- Help you understand concepts from the book content
+
+**What I cannot do:**
+- Answer questions outside the book's scope
+- Provide information not found in the book
+- Make up or speculate beyond the source material
+
+Just ask me a question about the book, and I'll find the relevant information with source citations!"""
+
+
+def detect_intent(message: str) -> MessageIntent:
+    """Detect the intent of a user message.
+
+    Args:
+        message: The user's message text
+
+    Returns:
+        MessageIntent indicating if it's a greeting, meta question, or content question
+    """
+    # Normalize message
+    normalized = message.lower().strip()
+
+    # Check for greetings (short messages or greeting patterns)
+    if len(normalized) <= 15:  # Short messages are likely greetings
+        for pattern in GREETING_PATTERNS:
+            if re.search(pattern, normalized, re.IGNORECASE):
+                return MessageIntent.GREETING
+
+    # Check for meta questions about the chatbot
+    for pattern in META_PATTERNS:
+        if re.search(pattern, normalized, re.IGNORECASE):
+            return MessageIntent.META
+
+    # Default to content question (will use RAG)
+    return MessageIntent.CONTENT
+
+
+def get_greeting_response() -> str:
+    """Get a response for greeting messages."""
+    import random
+    return random.choice(GREETING_RESPONSES)
+
+
+def get_meta_response() -> str:
+    """Get a response for meta questions about the chatbot."""
+    return META_RESPONSE
 
 # Load environment variables
 load_dotenv()
@@ -251,11 +353,10 @@ async def ask_question(request: AskRequest):
 
     Spec 006: Extended with user context for personalized responses.
 
-    The API will:
-    1. Validate user authentication (user_id and user_profile required)
-    2. Search for relevant content in the vector database
-    3. Generate a personalized, grounded answer using OpenAI
-    4. Return the answer with source citations
+    This endpoint includes intent detection to handle:
+    - Greetings: Returns friendly responses without RAG
+    - Meta questions: Explains the chatbot's capabilities
+    - Content questions: Uses full RAG pipeline with personalization
 
     Personalization affects TONE ONLY, not factual content.
     RAG grounding is preserved - all facts come from retrieved context.
@@ -265,6 +366,35 @@ async def ask_question(request: AskRequest):
         raise HTTPException(status_code=401, detail="user_id is required")
     if not request.user_profile:
         raise HTTPException(status_code=401, detail="user_profile is required")
+
+    # ==========================================================================
+    # Step 1: Intent Detection - Route greetings and meta questions
+    # ==========================================================================
+    intent = detect_intent(request.question)
+
+    # Handle greetings (hi, hello, thanks, etc.) - no RAG needed
+    if intent == MessageIntent.GREETING:
+        return AskResponse(
+            question=request.question,
+            answer=get_greeting_response(),
+            sources=[],
+            retrieval_time_ms=0,
+            generation_time_ms=0,
+        )
+
+    # Handle meta questions (what can you do, how do you work, etc.)
+    if intent == MessageIntent.META:
+        return AskResponse(
+            question=request.question,
+            answer=get_meta_response(),
+            sources=[],
+            retrieval_time_ms=0,
+            generation_time_ms=0,
+        )
+
+    # ==========================================================================
+    # Step 2: Content questions - Use full RAG pipeline
+    # ==========================================================================
 
     try:
         # Initialize retrieval pipeline

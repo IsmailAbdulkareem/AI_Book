@@ -24,6 +24,14 @@ from openai import OpenAI
 
 from retrieval import QueryResult, RetrievalPipeline
 
+# Import intent detection from agent.py for consistency
+from agent import (
+    detect_intent,
+    MessageIntent,
+    get_greeting_response,
+    get_meta_response,
+)
+
 # Load environment variables
 load_dotenv()
 
@@ -31,20 +39,29 @@ load_dotenv()
 # Constants (same as agent.py for consistency)
 # =============================================================================
 
-SYSTEM_PROMPT = """You are an assistant for the Physical AI & Humanoid Robotics book.
+SYSTEM_PROMPT = """You are a helpful assistant for the Physical AI & Humanoid Robotics book.
 
-IMPORTANT RULES:
-1. Answer questions ONLY using the provided context
-2. If the context doesn't contain relevant information, say "I don't have information about that topic in the book"
-3. Always cite sources by their number [1], [2], etc.
-4. Be concise and accurate
-5. Do not make up information not in the context
+YOUR ROLE:
+- You answer questions about topics covered in this book
+- All your factual answers must be grounded in the provided context
+- You cite sources using [1], [2], etc.
+
+ANSWERING RULES:
+1. Use ONLY the provided context for factual information
+2. Cite sources by number [1], [2], etc. when referencing specific content
+3. Be concise, accurate, and helpful
+4. Never make up or hallucinate information not in the context
+
+WHEN TO SAY "I don't have information about that topic in the book":
+- ONLY when the user asks a factual/conceptual question about the book's subject matter
+- AND the provided context does not contain relevant information to answer it
+- Do NOT say this for conversational messages or follow-up questions that can be answered from prior context
 
 Context will be provided in the format:
 [1] Content...
 Source: URL
 
-Use this context to answer the user's question."""
+Answer the user's question based on this context."""
 
 WELCOME_MESSAGE = """
 ╔══════════════════════════════════════════════════════════════════╗
@@ -138,10 +155,39 @@ def print_sources(results: List[QueryResult]) -> None:
 def ask_question(question: str, top_k: int = 5) -> None:
     """Ask a question and print the grounded answer.
 
+    Uses intent detection to handle greetings and meta questions
+    without invoking the RAG pipeline.
+
     Args:
         question: The question to ask
         top_k: Number of sources to retrieve
     """
+    # ==========================================================================
+    # Step 1: Intent Detection - Route greetings and meta questions
+    # ==========================================================================
+    intent = detect_intent(question)
+
+    # Handle greetings (hi, hello, thanks, etc.) - no RAG needed
+    if intent == MessageIntent.GREETING:
+        print("\n" + "=" * 60)
+        print("📝 Answer:")
+        print("=" * 60)
+        print(get_greeting_response())
+        print("=" * 60)
+        return
+
+    # Handle meta questions (what can you do, how do you work, etc.)
+    if intent == MessageIntent.META:
+        print("\n" + "=" * 60)
+        print("📝 Answer:")
+        print("=" * 60)
+        print(get_meta_response())
+        print("=" * 60)
+        return
+
+    # ==========================================================================
+    # Step 2: Content questions - Use full RAG pipeline
+    # ==========================================================================
     print("\n🔍 Searching for relevant content...")
 
     # Initialize retrieval pipeline

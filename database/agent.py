@@ -12,8 +12,10 @@ Dependencies: Spec 1 (ingestion), Spec 2 (retrieval)
 """
 
 import os
+import re
 import time
 from typing import Optional
+from enum import Enum
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
@@ -24,6 +26,114 @@ from pydantic import BaseModel, Field
 
 from retrieval import QueryResult, RetrievalPipeline
 
+
+# =============================================================================
+# Intent Detection
+# =============================================================================
+
+class MessageIntent(str, Enum):
+    """Classification of user message intent."""
+    GREETING = "greeting"
+    META = "meta"  # Questions about the chatbot itself
+    CONTENT = "content"  # Actual book-related questions
+
+
+# Greeting patterns (case-insensitive)
+GREETING_PATTERNS = [
+    r"^hi$", r"^hello$", r"^hey$", r"^howdy$",
+    r"^hi[!.,\s]", r"^hello[!.,\s]", r"^hey[!.,\s]",
+    r"^good\s*(morning|afternoon|evening|day)",
+    r"^greetings",
+    r"^thanks?$", r"^thank\s*you",
+    r"^ok$", r"^okay$", r"^sure$", r"^yes$", r"^no$",
+    r"^cool$", r"^nice$", r"^great$", r"^good$", r"^awesome$",
+    r"^bye$", r"^goodbye$", r"^see\s*you",
+    r"^sup$", r"^what'?s\s*up",
+]
+
+# Meta question patterns (questions about the chatbot)
+META_PATTERNS = [
+    r"what\s+can\s+you\s+do",
+    r"how\s+do(es)?\s+(this|you)\s+work",
+    r"what\s+are\s+you",
+    r"who\s+are\s+you",
+    r"what\s+is\s+this",
+    r"help\s*$", r"^help\s+me",
+    r"what\s+topics?\s+(can|do)\s+you",
+    r"what\s+questions?\s+can\s+i\s+ask",
+    r"how\s+can\s+you\s+help",
+    r"what\s+do\s+you\s+know",
+    r"tell\s+me\s+about\s+(yourself|you)",
+]
+
+# Pre-defined responses for greetings
+GREETING_RESPONSES = [
+    "Hello! I'm here to help you with questions about the Physical AI & Humanoid Robotics book. What would you like to know?",
+    "Hi! Feel free to ask me anything about the book content.",
+    "Hey there! I can answer questions about topics covered in the Physical AI & Humanoid Robotics book. What interests you?",
+]
+
+# Pre-defined response for meta questions
+META_RESPONSE = """I'm a book-focused assistant for the **Physical AI & Humanoid Robotics** book.
+
+**What I can do:**
+- Answer questions about topics covered in the book
+- Provide explanations with citations to specific sections
+- Help you understand concepts from the book content
+
+**What I cannot do:**
+- Answer questions outside the book's scope
+- Provide information not found in the book
+- Make up or speculate beyond the source material
+
+Just ask me a question about the book, and I'll find the relevant information with source citations!"""
+
+
+def detect_intent(message: str) -> MessageIntent:
+    """Detect the intent of a user message.
+
+    Args:
+        message: The user's message text
+
+    Returns:
+        MessageIntent indicating if it's a greeting, meta question, or content question
+    """
+    # Normalize message
+    normalized = message.lower().strip()
+
+    # Check for greetings (short messages or greeting patterns)
+    if len(normalized) <= 15:  # Short messages are likely greetings
+        for pattern in GREETING_PATTERNS:
+            if re.search(pattern, normalized, re.IGNORECASE):
+                return MessageIntent.GREETING
+
+    # Check for meta questions about the chatbot
+    for pattern in META_PATTERNS:
+        if re.search(pattern, normalized, re.IGNORECASE):
+            return MessageIntent.META
+
+    # Default to content question (will use RAG)
+    return MessageIntent.CONTENT
+
+
+def get_greeting_response() -> str:
+    """Get a response for greeting messages.
+
+    Returns:
+        A friendly greeting response
+    """
+    import random
+    return random.choice(GREETING_RESPONSES)
+
+
+def get_meta_response() -> str:
+    """Get a response for meta questions about the chatbot.
+
+    Returns:
+        An explanation of the chatbot's capabilities
+    """
+    return META_RESPONSE
+
 # Load environment variables
 load_dotenv()
 
@@ -31,20 +141,29 @@ load_dotenv()
 # Constants
 # =============================================================================
 
-SYSTEM_PROMPT = """You are an assistant for the Physical AI & Humanoid Robotics book.
+SYSTEM_PROMPT = """You are a helpful assistant for the Physical AI & Humanoid Robotics book.
 
-IMPORTANT RULES:
-1. Answer questions ONLY using the provided context
-2. If the context doesn't contain relevant information, say "I don't have information about that topic in the book"
-3. Always cite sources by their number [1], [2], etc.
-4. Be concise and accurate
-5. Do not make up information not in the context
+YOUR ROLE:
+- You answer questions about topics covered in this book
+- All your factual answers must be grounded in the provided context
+- You cite sources using [1], [2], etc.
+
+ANSWERING RULES:
+1. Use ONLY the provided context for factual information
+2. Cite sources by number [1], [2], etc. when referencing specific content
+3. Be concise, accurate, and helpful
+4. Never make up or hallucinate information not in the context
+
+WHEN TO SAY "I don't have information about that topic in the book":
+- ONLY when the user asks a factual/conceptual question about the book's subject matter
+- AND the provided context does not contain relevant information to answer it
+- Do NOT say this for conversational messages or follow-up questions that can be answered from prior context
 
 Context will be provided in the format:
 [1] Content...
 Source: URL
 
-Use this context to answer the user's question."""
+Answer the user's question based on this context."""
 
 # =============================================================================
 # Pydantic Models
@@ -252,12 +371,46 @@ def check_openai_health() -> DependencyHealth:
 async def ask_question(request: AskRequest):
     """Ask a question and get a grounded answer with source citations.
 
+    This endpoint now includes intent detection to handle:
+    - Greetings: Returns friendly responses without RAG
+    - Meta questions: Explains the chatbot's capabilities
+    - Content questions: Uses full RAG pipeline
+
     Args:
         request: AskRequest with question and optional top_k
 
     Returns:
         AskResponse with answer and sources
     """
+    # ==========================================================================
+    # Step 1: Intent Detection - Route greetings and meta questions
+    # ==========================================================================
+    intent = detect_intent(request.question)
+
+    # Handle greetings (hi, hello, thanks, etc.) - no RAG needed
+    if intent == MessageIntent.GREETING:
+        return AskResponse(
+            question=request.question,
+            answer=get_greeting_response(),
+            sources=[],
+            retrieval_time_ms=0,
+            generation_time_ms=0,
+        )
+
+    # Handle meta questions (what can you do, how do you work, etc.)
+    if intent == MessageIntent.META:
+        return AskResponse(
+            question=request.question,
+            answer=get_meta_response(),
+            sources=[],
+            retrieval_time_ms=0,
+            generation_time_ms=0,
+        )
+
+    # ==========================================================================
+    # Step 2: Content questions - Use full RAG pipeline
+    # ==========================================================================
+
     # Initialize retrieval pipeline
     try:
         pipeline = RetrievalPipeline()

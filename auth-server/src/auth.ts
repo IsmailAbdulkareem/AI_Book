@@ -73,6 +73,16 @@ export const auth = betterAuth({
     "http://localhost:3000",
   ],
 
+  // Cross-domain cookie configuration
+  // Required because frontend (github.io) and backend (render.com) are different domains
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",    // Allow cross-origin cookies
+      secure: true,        // Required when sameSite is "none"
+      partitioned: true,   // Required by modern browsers for third-party cookies
+    },
+  },
+
   // Base path for auth endpoints
   basePath: "/api/auth",
 });

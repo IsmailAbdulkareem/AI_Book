@@ -6,7 +6,7 @@ const config = {
   baseUrl: '/AI_Book/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   organizationName: 'IsmailAbdulkareem',   // FIXED
   projectName: 'AI_Book',                  // FIXED
@@ -41,6 +41,10 @@ const config = {
   themeConfig: ({
     navbar: {
       title: 'Physical AI & Humanoid Robotics',
+      logo: {
+        alt: 'Physical AI Logo',
+        src: 'img/logo.svg',
+      },
       items: [
         {
           type: 'doc',

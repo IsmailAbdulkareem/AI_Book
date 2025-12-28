@@ -1,0 +1,28 @@
+{
+  "id": "appendix/appendix-resources",
+  "title": "Resources",
+  "description": "This appendix provides curated links to official documentation, tutorials, and community resources for the tools and technologies covered in this book.",
+  "source": "@site/docs/appendix/resources.md",
+  "sourceDirName": "appendix",
+  "slug": "/appendix/appendix-resources",
+  "permalink": "/AI_Book/docs/appendix/appendix-resources",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 10,
+  "frontMatter": {
+    "id": "appendix-resources",
+    "title": "Resources",
+    "sidebar_position": 10
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Capstone Project: The Autonomous Humanoid",
+    "permalink": "/AI_Book/docs/capstone_workflow/"
+  },
+  "next": {
+    "title": "Assessments",
+    "permalink": "/AI_Book/docs/appendix/appendix-assessments"
+  }
+}

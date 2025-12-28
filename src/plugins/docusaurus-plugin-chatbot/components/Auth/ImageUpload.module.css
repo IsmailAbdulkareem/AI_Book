@@ -1,0 +1,151 @@
+/* ============================================================================
+   Image Upload Component Styles
+   ============================================================================ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Preview Container */
+.previewContainer {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--ifm-color-emphasis-100, #f3f4f6);
+  border: 2px solid var(--ifm-color-emphasis-200, #e5e7eb);
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ifm-color-emphasis-100, #f3f4f6);
+}
+
+.placeholderIcon {
+  width: 48px;
+  height: 48px;
+  color: var(--ifm-color-emphasis-400, #9ca3af);
+}
+
+/* Uploading Overlay */
+.uploadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.uploadButton {
+  padding: 6px 14px;
+  background: var(--ifm-color-primary, #2563eb);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background: var(--ifm-color-primary-dark, #1d4ed8);
+}
+
+.uploadButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.removeButton {
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--ifm-color-emphasis-600, #666);
+  border: 1px solid var(--ifm-color-emphasis-300, #ddd);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.removeButton:hover {
+  background: var(--ifm-color-emphasis-100, #f3f4f6);
+  color: var(--ifm-color-danger, #dc2626);
+}
+
+/* Hidden File Input */
+.hiddenInput {
+  display: none;
+}
+
+/* Error Message */
+.error {
+  color: var(--ifm-color-danger, #dc2626);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ============================================================================
+   Dark Mode Support
+   ============================================================================ */
+
+[data-theme="dark"] .previewContainer {
+  background: var(--ifm-color-emphasis-200, #333);
+  border-color: var(--ifm-color-emphasis-400, #555);
+}
+
+[data-theme="dark"] .placeholder {
+  background: var(--ifm-color-emphasis-200, #333);
+}
+
+[data-theme="dark"] .placeholderIcon {
+  color: var(--ifm-color-emphasis-500, #666);
+}
+
+[data-theme="dark"] .removeButton {
+  border-color: var(--ifm-color-emphasis-400, #555);
+}
+
+[data-theme="dark"] .removeButton:hover {
+  background: var(--ifm-color-emphasis-200, #333);
+}

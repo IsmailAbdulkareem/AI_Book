@@ -1,0 +1,28 @@
+{
+  "id": "hardware-lab-architecture/hardware-lab-architecture",
+  "title": "Hardware & Lab Architecture",
+  "description": "Why Physical AI Needs Serious Compute",
+  "source": "@site/docs/hardware-lab-architecture/index.md",
+  "sourceDirName": "hardware-lab-architecture",
+  "slug": "/hardware-lab-architecture/",
+  "permalink": "/AI_Book/docs/hardware-lab-architecture/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 8,
+  "frontMatter": {
+    "id": "hardware-lab-architecture",
+    "title": "Hardware & Lab Architecture",
+    "sidebar_position": 8
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Chapter 1: Vision-Language-Action Introduction",
+    "permalink": "/AI_Book/docs/module4/module4-chapter1"
+  },
+  "next": {
+    "title": "Capstone Project: The Autonomous Humanoid",
+    "permalink": "/AI_Book/docs/capstone_workflow/"
+  }
+}

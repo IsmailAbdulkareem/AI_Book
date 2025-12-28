@@ -1,0 +1,28 @@
+{
+  "id": "glossary",
+  "title": "Glossary",
+  "description": "This glossary defines key terms used throughout the Physical AI & Humanoid Robotics book. It will be maintained and extended as modules are written.",
+  "source": "@site/docs/glossary.md",
+  "sourceDirName": ".",
+  "slug": "/glossary",
+  "permalink": "/AI_Book/docs/glossary",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "id": "glossary",
+    "title": "Glossary",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Environment Setup",
+    "permalink": "/AI_Book/docs/introduction/intro-environment-setup"
+  },
+  "next": {
+    "title": "Module 1: The Robotic Nervous System (ROS 2)",
+    "permalink": "/AI_Book/docs/module1/"
+  }
+}

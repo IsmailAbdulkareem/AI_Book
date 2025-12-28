@@ -1,0 +1,28 @@
+{
+  "id": "introduction/intro-environment-setup",
+  "title": "Environment Setup",
+  "description": "This guide provides high-level instructions for setting up your development environment for Physical AI and Humanoid Robotics development. For detailed, step-by-step instructions, always refer to the official documentation of each tool.",
+  "source": "@site/docs/introduction/environment-setup.md",
+  "sourceDirName": "introduction",
+  "slug": "/introduction/intro-environment-setup",
+  "permalink": "/AI_Book/docs/introduction/intro-environment-setup",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "id": "intro-environment-setup",
+    "title": "Environment Setup",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Introduction & Foundations",
+    "permalink": "/AI_Book/docs/introduction/"
+  },
+  "next": {
+    "title": "Glossary",
+    "permalink": "/AI_Book/docs/glossary"
+  }
+}

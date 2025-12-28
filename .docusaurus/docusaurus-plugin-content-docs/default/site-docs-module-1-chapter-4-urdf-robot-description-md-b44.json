@@ -1,0 +1,28 @@
+{
+  "id": "module1/module1-chapter4",
+  "title": "Chapter 4: Robot Description with URDF and Xacro",
+  "description": "Type: Theory-to-Practice",
+  "source": "@site/docs/module1/chapter-4-urdf-robot-description.md",
+  "sourceDirName": "module1",
+  "slug": "/module1/module1-chapter4",
+  "permalink": "/AI_Book/docs/module1/module1-chapter4",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "id": "module1-chapter4",
+    "title": "Chapter 4: Robot Description with URDF and Xacro",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Chapter 3: Python-ROS Integration with rclpy",
+    "permalink": "/AI_Book/docs/module1/module1-chapter3"
+  },
+  "next": {
+    "title": "Module 2: The Digital Twin (Gazebo & Unity)",
+    "permalink": "/AI_Book/docs/module2/"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "module4/module4-chapter2",
+  "title": "Chapter 2: Advanced VLA Systems",
+  "description": "This chapter is a placeholder for advanced topics in Vision-Language-Action (VLA).",
+  "source": "@site/docs/module4/chapter-2-advanced-vla.md",
+  "sourceDirName": "module4",
+  "slug": "/module4/module4-chapter2",
+  "permalink": "/AI_Book/docs/module4/module4-chapter2",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "id": "module4-chapter2",
+    "title": "Chapter 2: Advanced VLA Systems",
+    "sidebar_position": 2
+  }
+}

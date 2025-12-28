@@ -1,0 +1,130 @@
+# Sitemap Generation API Contract
+
+## Overview
+This contract defines the interface for the sitemap generation functionality for the AI book website.
+
+## Endpoints
+
+### GET /sitemap.xml
+**Purpose**: Retrieve the XML sitemap for search engine indexing
+
+**Request**:
+- Method: GET
+- Path: /sitemap.xml
+- Headers: None required
+- Query Parameters: None
+
+**Response**:
+- Status: 200 OK
+- Content-Type: application/xml
+- Body: XML sitemap following sitemap protocol
+
+**Example Response**:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://example.com/</loc>
+    <lastmod>2025-12-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://example.com/modules/introduction</loc>
+    <lastmod>2025-12-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>
+```
+
+### GET /sitemap
+**Purpose**: Retrieve the human-readable HTML sitemap
+
+**Request**:
+- Method: GET
+- Path: /sitemap
+- Headers: None required
+- Query Parameters: None
+
+**Response**:
+- Status: 200 OK
+- Content-Type: text/html
+- Body: HTML page with hierarchical sitemap
+
+**Response Schema**:
+```json
+{
+  "type": "object",
+  "properties": {
+    "title": {"type": "string"},
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "url": {"type": "string"},
+          "chapters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "string"},
+                "title": {"type": "string"},
+                "url": {"type": "string"}
+              },
+              "required": ["id", "title", "url"]
+            }
+          }
+        },
+        "required": ["id", "title", "url", "chapters"]
+      }
+    }
+  },
+  "required": ["title", "modules"]
+}
+```
+
+## Data Models
+
+### SitemapEntry
+```json
+{
+  "type": "object",
+  "properties": {
+    "url": {"type": "string", "format": "uri"},
+    "lastmod": {"type": "string", "format": "date"},
+    "changefreq": {
+      "type": "string",
+      "enum": ["always", "hourly", "daily", "weekly", "monthly", "yearly", "never"]
+    },
+    "priority": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  },
+  "required": ["url", "lastmod", "changefreq", "priority"]
+}
+```
+
+## Error Responses
+
+### 404 Not Found
+- **Path**: /sitemap.xml or /sitemap
+- **Reason**: Sitemap generation failed or not available
+- **Body**:
+```json
+{
+  "error": "Sitemap not found",
+  "message": "The requested sitemap could not be generated or located"
+}
+```
+
+## Performance Requirements
+- Response time: < 200ms for sitemap.xml
+- Response time: < 500ms for HTML sitemap
+- Support for sites with up to 10,000 pages
+- Cache sitemap data to improve response times

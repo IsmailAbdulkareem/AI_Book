@@ -1,0 +1,27 @@
+# Node.js
+node_modules/
+dist/
+build/
+*.log
+.env*
+.docusaurus/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# RAG Pipeline - Local data
+database/snapshots/
+.env

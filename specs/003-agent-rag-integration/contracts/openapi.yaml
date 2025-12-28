@@ -1,0 +1,258 @@
+openapi: 3.0.3
+info:
+  title: RAG Agent API
+  description: |
+    API for the Physical AI & Humanoid Robotics book RAG chatbot.
+    Accepts natural language questions and returns grounded answers with source citations.
+  version: 1.0.0
+  contact:
+    name: AI Book Project
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+paths:
+  /ask:
+    post:
+      summary: Ask a question
+      description: |
+        Submit a natural language question about the book content.
+        The system retrieves relevant context from the vector database,
+        generates a grounded answer, and returns it with source citations.
+      operationId: askQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AskRequest'
+            examples:
+              basic:
+                summary: Basic question
+                value:
+                  question: "What is ROS 2?"
+              withTopK:
+                summary: Question with custom top_k
+                value:
+                  question: "How does Gazebo simulation work?"
+                  top_k: 3
+      responses:
+        '200':
+          description: Successful response with answer and sources
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AskResponse'
+              example:
+                question: "What is ROS 2?"
+                answer: "ROS 2 (Robot Operating System 2) is a flexible framework for writing robot software [1]. It provides tools, libraries, and conventions for building robot applications [2]."
+                sources:
+                  - url: "https://example.com/docs/module1/chapter2"
+                    content: "ROS 2 is a flexible framework for writing robot software..."
+                    score: 0.85
+                    position: 1
+                  - url: "https://example.com/docs/module1/chapter1"
+                    content: "Introduction to ROS 2 and robotics fundamentals..."
+                    score: 0.78
+                    position: 0
+                retrieval_time_ms: 450
+                generation_time_ms: 1200
+        '400':
+          description: Invalid request (empty question or invalid parameters)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "validation_error"
+                message: "Question cannot be empty"
+                details: null
+        '500':
+          description: Server error (retrieval or generation failure)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "generation_error"
+                message: "Failed to generate answer"
+                details:
+                  cause: "OpenAI API timeout"
+        '503':
+          description: Service unavailable (critical dependency down)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "service_unavailable"
+                message: "Vector database is unavailable"
+                details:
+                  dependency: "qdrant"
+
+  /health:
+    get:
+      summary: Health check
+      description: |
+        Check the health status of the service and its dependencies.
+        Returns overall status and individual dependency status.
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                healthy:
+                  summary: All systems healthy
+                  value:
+                    status: "healthy"
+                    dependencies:
+                      qdrant:
+                        status: "connected"
+                        details:
+                          collection: "rag_embedding"
+                          vectors: 135
+                      openai:
+                        status: "configured"
+                        details: null
+                degraded:
+                  summary: Partial degradation
+                  value:
+                    status: "degraded"
+                    dependencies:
+                      qdrant:
+                        status: "error"
+                        details:
+                          error: "Connection timeout"
+                      openai:
+                        status: "configured"
+                        details: null
+
+components:
+  schemas:
+    AskRequest:
+      type: object
+      required:
+        - question
+      properties:
+        question:
+          type: string
+          minLength: 1
+          description: Natural language question about the book content
+          example: "What is ROS 2?"
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 5
+          description: Number of context chunks to retrieve
+          example: 5
+
+    AskResponse:
+      type: object
+      required:
+        - question
+        - answer
+        - sources
+        - retrieval_time_ms
+        - generation_time_ms
+      properties:
+        question:
+          type: string
+          description: The original question asked
+        answer:
+          type: string
+          description: Generated answer grounded in sources
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+          description: List of source citations used
+        retrieval_time_ms:
+          type: integer
+          minimum: 0
+          description: Time taken to retrieve context in milliseconds
+        generation_time_ms:
+          type: integer
+          minimum: 0
+          description: Time taken to generate answer in milliseconds
+
+    Source:
+      type: object
+      required:
+        - url
+        - content
+        - score
+        - position
+      properties:
+        url:
+          type: string
+          description: URL of the source page
+          example: "https://example.com/docs/module1/chapter2"
+        content:
+          type: string
+          description: Content snippet from the source
+          example: "ROS 2 is a flexible framework..."
+        score:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          description: Relevance score (0-1)
+          example: 0.85
+        position:
+          type: integer
+          minimum: 0
+          description: Chunk position in document
+          example: 1
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+        - dependencies
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          description: Overall service status
+        dependencies:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/DependencyHealth'
+          description: Status of each dependency
+
+    DependencyHealth:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: "Status: connected, configured, error"
+        details:
+          type: object
+          nullable: true
+          description: Additional details about the dependency
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          enum: [validation_error, retrieval_error, generation_error, service_unavailable]
+          description: Error type
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          nullable: true
+          description: Additional error details

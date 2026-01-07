@@ -4,12 +4,10 @@
  * Handles communication with the RAG backend API.
  * Uses native fetch with AbortController for timeout handling.
  *
- * Spec 006: Extended to include user context (user_id + user_profile) in requests.
- * The user profile is used by the backend for personalization.
+ * Updated: Works for both authenticated and unauthenticated users.
  */
 import { useState, useCallback } from 'react';
 import { usePluginData } from '@docusaurus/useGlobalData';
-import { useAuth } from '../../Auth';
 
 const DEFAULT_TIMEOUT = 30000; // 30 seconds
 
@@ -46,9 +44,6 @@ export function useApiClient() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Get auth context for user_id and user_profile (Spec 006)
-  const { user } = useAuth();
-
   // Get API URL from plugin global data
   let apiUrl = 'http://localhost:8000';
   try {
@@ -61,37 +56,7 @@ export function useApiClient() {
   }
 
   /**
-   * Build user profile payload from session user
-   *
-   * Spec 006: Parse JSON-encoded arrays and map camelCase to snake_case
-   *
-   * @param {Object} user - User object from Better Auth session
-   * @returns {Object} User profile payload for /ask API
-   */
-  const buildUserProfile = useCallback((sessionUser) => {
-    if (!sessionUser) return null;
-
-    // Parse technologies from JSON string (Better Auth stores arrays as strings)
-    let technologies = [];
-    try {
-      if (sessionUser.technologies) {
-        technologies = JSON.parse(sessionUser.technologies);
-      }
-    } catch {
-      technologies = [];
-    }
-
-    return {
-      programming_level: sessionUser.programmingLevel || 'beginner',
-      technologies: technologies,
-      hardware_access: sessionUser.hardwareAccess || 'none',
-    };
-  }, []);
-
-  /**
    * Ask a question to the RAG backend
-   *
-   * Spec 006: Includes user_id and user_profile for personalization
    *
    * @param {string} question - The user's question
    * @param {string} [context] - Optional selected text context
@@ -102,14 +67,6 @@ export function useApiClient() {
     async (question, context, topK = 5) => {
       setIsLoading(true);
       setError(null);
-
-      // Build user context from auth session if available (optional for unauthenticated users)
-      const userProfile = user ? buildUserProfile(user) : {
-        programming_level: 'beginner',
-        technologies: [],
-        hardware_access: 'none'
-      };
-      const userId = user?.id || 'anonymous';
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
@@ -124,9 +81,7 @@ export function useApiClient() {
             question,
             ...(context && { context }),
             top_k: topK,
-            // Spec 006: Include user context
-            user_id: userId,
-            user_profile: userProfile,
+            // No user authentication required - chatbot accessible to all
           }),
           signal: controller.signal,
         });
@@ -151,7 +106,7 @@ export function useApiClient() {
         setIsLoading(false);
       }
     },
-    [apiUrl, user, buildUserProfile]
+    [apiUrl]
   );
 
   /**

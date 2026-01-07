@@ -178,11 +178,11 @@ class AskRequest(BaseModel):
     Updated: user_id and user_profile are now OPTIONAL to allow unauthenticated access.
     """
     question: str = Field(..., min_length=1, description="The question to ask")
-    context: Optional[str] = Field(None, description="Optional selected text context")
-    top_k: int = Field(5, ge=1, le=10, description="Number of sources to retrieve")
+    context: Optional[str] = Field(default=None, description="Optional selected text context")
+    top_k: int = Field(default=5, ge=1, le=10, description="Number of sources to retrieve")
     # User context for personalization (now optional for unauthenticated users)
-    user_id: Optional[str] = Field(None, description="User ID from Better Auth session (optional)")
-    user_profile: Optional[UserProfile] = Field(None, description="User profile for response personalization (optional)")
+    user_id: Optional[str] = Field(default=None, description="User ID from Better Auth session (optional)")
+    user_profile: Optional[UserProfile] = Field(default=None, description="User profile for response personalization (optional)")
 
 
 class Source(BaseModel):

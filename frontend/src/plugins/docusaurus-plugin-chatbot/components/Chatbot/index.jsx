@@ -4,28 +4,18 @@
  * Main wrapper component that manages the chatbot state and renders
  * the floating icon and chat panel. Handles text selection context.
  *
- * Spec 006: Authentication Gate
- * - Chatbot is gated behind authentication
- * - If user is not authenticated → show AuthModal instead of opening chatbot
- * - If user is authenticated but profile incomplete → show AuthModal
- * - Only open chatbot when authenticated AND profile complete
+ * Updated: Chatbot is now accessible to all users without authentication.
  */
 import React, { useState, useCallback, useEffect } from 'react';
 import ChatIcon from './ChatIcon';
 import ChatPanel from './ChatPanel';
-import { useAuth, AuthModal } from '../Auth';
 
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedContext, setSelectedContext] = useState(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  // Get auth state from context
-  const { isAuthenticated, isProfileComplete, isPending } = useAuth();
-
-  // Handle chatbot icon click - no auth gate, open directly
+  // Handle chatbot icon click - no authentication required
   const handleToggle = useCallback(() => {
-    // Toggle chatbot directly without auth check
     setIsOpen((prev) => !prev);
   }, []);
 
@@ -34,21 +24,8 @@ export function Chatbot() {
     setIsOpen(false);
   }, []);
 
-  // Close auth modal
-  const handleCloseAuthModal = useCallback(() => {
-    setShowAuthModal(false);
-  }, []);
-
-  // Handle successful auth - open chatbot if profile is complete
-  const handleAuthSuccess = useCallback(() => {
-    setShowAuthModal(false);
-    // Re-check auth state after successful auth
-    // The useAuth hook will automatically update
-  }, []);
-
   // Set context from text selection (called by TextSelection component)
   const handleSetContext = useCallback((text) => {
-    // Set context and open panel directly without auth check
     setSelectedContext(text);
     setIsOpen(true); // Open panel when context is set
   }, []);
@@ -66,13 +43,11 @@ export function Chatbot() {
     };
   }, [handleSetContext]);
 
-  // Handle Escape key to close panel or modal
+  // Handle Escape key to close panel
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        if (showAuthModal) {
-          setShowAuthModal(false);
-        } else if (isOpen) {
+        if (isOpen) {
           handleClose();
         }
       }
@@ -82,7 +57,7 @@ export function Chatbot() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, showAuthModal, handleClose]);
+  }, [isOpen, handleClose]);
 
   return (
     <>
@@ -90,10 +65,9 @@ export function Chatbot() {
       <ChatIcon
         isOpen={isOpen}
         onClick={handleToggle}
-        isLoading={isPending}
       />
 
-      {/* Chat Panel - shown when panel is open (no auth required) */}
+      {/* Chat Panel - shown when panel is open */}
       {isOpen && (
         <ChatPanel
           onClose={handleClose}
@@ -101,13 +75,6 @@ export function Chatbot() {
           onClearContext={handleClearContext}
         />
       )}
-
-      {/* Auth Modal - shown when auth gate blocks access */}
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={handleCloseAuthModal}
-        onSuccess={handleAuthSuccess}
-      />
     </>
   );
 }

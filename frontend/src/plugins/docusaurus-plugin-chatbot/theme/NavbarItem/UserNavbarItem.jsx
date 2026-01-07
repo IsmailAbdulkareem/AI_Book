@@ -5,7 +5,8 @@
  * - When not authenticated: Shows "Sign In" button that opens AuthModal
  * - When authenticated: Shows user avatar with dropdown menu (Sign Out)
  */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import { useAuth } from '../../components/Auth';
 import AuthModal from '../../components/Auth/AuthModal';
 import { signOut } from '../../lib/auth-client';
@@ -25,7 +26,11 @@ function DefaultAvatar() {
   );
 }
 
-export default function UserNavbarItem() {
+function NavbarAuthContent({ ssr = false }) {
+  if (ssr) {
+    return null;
+  }
+
   const { isAuthenticated, user, isPending, isProfileComplete } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -43,8 +48,7 @@ export default function UserNavbarItem() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle sign out
-  const handleSignOut = async () => {
+  const handleSignOut = useCallback(async () => {
     setIsLoggingOut(true);
     try {
       await signOut();
@@ -54,14 +58,12 @@ export default function UserNavbarItem() {
     } finally {
       setIsLoggingOut(false);
     }
-  };
+  }, []);
 
-  // Show loading skeleton while auth state is loading
   if (isPending) {
     return <div className={styles.skeleton} />;
   }
 
-  // Not authenticated - show Sign In button
   if (!isAuthenticated) {
     return (
       <>
@@ -80,7 +82,6 @@ export default function UserNavbarItem() {
     );
   }
 
-  // Authenticated - show user avatar with dropdown
   const displayName = user?.name || user?.email?.split('@')[0] || 'User';
   const avatarUrl = user?.image;
 
@@ -134,3 +135,12 @@ export default function UserNavbarItem() {
     </div>
   );
 }
+
+export default function UserNavbarItem(props) {
+  return (
+    <BrowserOnly fallback={null}>
+      {() => <NavbarAuthContent {...props} />}
+    </BrowserOnly>
+  );
+}
+

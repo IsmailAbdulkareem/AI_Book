@@ -12,7 +12,7 @@ const path = require('path');
  * @returns {Object} Plugin configuration
  */
 module.exports = function pluginChatbot(context, options) {
-  const { apiUrl = 'http://localhost:8000' } = options;
+  const { apiUrl = 'https://ismail233290-rag.hf.space/ask' } = options;
 
   return {
     name: 'docusaurus-plugin-chatbot',

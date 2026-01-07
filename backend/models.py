@@ -45,8 +45,8 @@ class AskRequest(BaseModel):
     """
     Request model for /ask endpoint.
 
-    Extended with user context for Spec 006 (Authentication + Profiling).
-    user_id and user_profile are REQUIRED for authenticated requests.
+    Extended with optional user context for Spec 006 (Authentication + Profiling).
+    user_id and user_profile are optional - chatbot works for both authenticated and anonymous users.
     """
     question: str = Field(
         ...,
@@ -65,14 +65,14 @@ class AskRequest(BaseModel):
         le=10,
         description="Number of sources to retrieve"
     )
-    # User context (required for authenticated requests)
-    user_id: str = Field(
-        ...,
-        description="Authenticated user ID from Better Auth session"
+    # User context (optional for anonymous users)
+    user_id: Optional[str] = Field(
+        None,
+        description="Authenticated user ID from Better Auth session (optional for anonymous access)"
     )
-    user_profile: UserProfile = Field(
-        ...,
-        description="User profile for response personalization"
+    user_profile: Optional[UserProfile] = Field(
+        None,
+        description="User profile for response personalization (optional for anonymous access)"
     )
 
 

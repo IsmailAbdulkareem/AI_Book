@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#25c2a0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1fa588;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3578e5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c6dd0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Robot Head Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#grad1)"/>
+
+  <!-- Robot Face Base -->
+  <rect x="156" y="146" width="200" height="220" rx="30" ry="30" fill="#ffffff"/>
+
+  <!-- Robot Eyes -->
+  <circle cx="206" cy="226" r="35" fill="url(#grad2)"/>
+  <circle cx="306" cy="226" r="35" fill="url(#grad2)"/>
+
+  <!-- Eye Highlights -->
+  <circle cx="196" cy="216" r="12" fill="#ffffff" opacity="0.8"/>
+  <circle cx="296" cy="216" r="12" fill="#ffffff" opacity="0.8"/>
+
+  <!-- Robot Mouth/Speaker -->
+  <rect x="196" y="296" width="120" height="40" rx="10" ry="10" fill="url(#grad2)"/>
+
+  <!-- Antenna -->
+  <rect x="246" y="86" width="20" height="60" rx="10" ry="10" fill="#ffffff"/>
+  <circle cx="256" cy="76" r="20" fill="url(#grad2)"/>
+
+  <!-- Ear Sensors -->
+  <rect x="116" y="206" width="40" height="60" rx="10" ry="10" fill="#ffffff"/>
+  <rect x="356" y="206" width="40" height="60" rx="10" ry="10" fill="#ffffff"/>
+
+  <!-- AI Circuit Lines -->
+  <path d="M206 296 L206 276 L186 276" stroke="url(#grad2)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M306 296 L306 276 L326 276" stroke="url(#grad2)" stroke-width="4" fill="none" stroke-linecap="round"/>
+</svg>

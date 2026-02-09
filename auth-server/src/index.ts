@@ -17,6 +17,8 @@ app.use(
       "https://ismailabdulkareem.github.io",
       "http://localhost:3000",
       "http://127.0.0.1:3000",
+      // Add HF Space URLs when deployed
+      "https://ismail233290-auth-server.hf.space",
     ],
     credentials: true, // REQUIRED for session cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -62,7 +64,7 @@ app.get("/", (_req, res) => {
 // Start Server
 // ============================================================================
 app.listen(port, () => {
-  console.log(`🔐 Auth server running on http://localhost:${port}`);
+  console.log(`Auth server running on http://localhost:${port}`);
   console.log(`   Health check: http://localhost:${port}/health`);
   console.log(`   Auth endpoints: http://localhost:${port}/api/auth/*`);
 });

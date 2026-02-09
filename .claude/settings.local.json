@@ -92,7 +92,11 @@
       "Bash(git rm -r database/)",
       "Bash(test:*)",
       "Bash(powershell.exe:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(git clone:*)",
+      "Bash(set:*)",
+      "Bash(git remote:*)",
+      "Bash(git branch:*)"
     ],
     "deny": [],
     "ask": []

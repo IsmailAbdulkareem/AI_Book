@@ -48,7 +48,7 @@ const config = {
     [
       './src/plugins/docusaurus-plugin-chatbot',
       {
-        apiUrl: 'https://ai-book-h6kj.onrender.com',
+        apiUrl: 'https://ismail233290-backened.hf.space',
       },
     ],
   ],

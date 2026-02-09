@@ -116,6 +116,9 @@ class RetrievalPipeline:
         """Initialize Qdrant client."""
         url = os.getenv("QDRANT_URL", "http://localhost:6333")
         api_key = os.getenv("QDRANT_API_KEY")
+        # Strip whitespace/newlines from API key to avoid header errors
+        if api_key:
+            api_key = api_key.strip()
 
         return (
             QdrantClient(url=url, api_key=api_key)

@@ -463,11 +463,11 @@ if __name__ == "__main__":
 
     # Verify required environment variables
     if not os.getenv("OPENAI_API_KEY"):
-        print("❌ Error: OPENAI_API_KEY environment variable not set.")
+        print("ERROR: OPENAI_API_KEY environment variable not set.")
         exit(1)
 
     if not os.getenv("QDRANT_URL"):
-        print("⚠️  Warning: QDRANT_URL not set, using default localhost:6333")
+        print("WARNING: QDRANT_URL not set, using default localhost:6333")
 
-    print("🚀 Starting RAG Chatbot API server...")
+    print("Starting RAG Chatbot API server...")
     uvicorn.run(app, host="0.0.0.0", port=8000)

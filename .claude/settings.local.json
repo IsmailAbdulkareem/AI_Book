@@ -79,7 +79,20 @@
       "Bash(findstr:*)",
       "Bash(timeout:*)",
       "Bash(npm run dev)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Skill(sp.specify)",
+      "Bash(npm start --prefix frontend)",
+      "Bash(taskkill:*)",
+      "Skill(chatbot-status)",
+      "Bash(npm run serve)",
+      "Bash(uvicorn:*)",
+      "Bash(npm start:*)",
+      "Bash(npm run deploy)",
+      "Bash(set USE_SSH=true)",
+      "Bash(git rm -r database/)",
+      "Bash(test:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": []

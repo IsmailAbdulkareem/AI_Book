@@ -13,11 +13,11 @@ Initialize the Docusaurus project and establish the basic repository structure f
 The Docusaurus site can be built and served locally.
 
 ### Implementation Tasks
-- [ ] T001 Initialize Docusaurus project in the root directory
-- [ ] T002 Configure `docusaurus.config.js` with site metadata and theme in `docusaurus.config.js`
-- [ ] T003 Set up `sidebars.js` for initial documentation structure in `sidebars.js`
-- [ ] T004 Create initial `docs` directory structure for modules and hardware/lab architecture: `docs/module1`, `docs/module2`, `docs/module3`, `docs/module4`, `docs/hardware-lab-architecture`
-- [ ] T005 Install project dependencies using `npm install` in the root directory
+- [x] T001 Initialize Docusaurus project in the root directory
+- [x] T002 Configure `docusaurus.config.js` with site metadata and theme in `docusaurus.config.js`
+- [x] T003 Set up `sidebars.js` for initial documentation structure in `sidebars.js`
+- [x] T004 Create initial `docs` directory structure for modules and hardware/lab architecture: `docs/module1`, `docs/module2`, `docs/module3`, `docs/module4`, `docs/hardware-lab-architecture`
+- [x] T005 Install project dependencies using `npm install` in the root directory
 
 ## Phase 2: Foundational
 
@@ -28,9 +28,9 @@ Establish core project components and cross-cutting concerns that are prerequisi
 The project adheres to the constitution and has a basic `README.md` and CI/CD pipeline setup.
 
 ### Implementation Tasks
-- [ ] T006 Review and refine `.specify/memory/constitution.md` based on initial project setup
-- [ ] T007 Create a basic `README.md` for project setup and build instructions in `README.md`
-- [ ] T008 Set up CI/CD for Docusaurus build and deployment to GitHub Pages (placeholder/initial config) in `.github/workflows/deploy.yml`
+- [x] T006 Review and refine `.specify/memory/constitution.md` based on initial project setup
+- [x] T007 Create a basic `README.md` for project setup and build instructions in `README.md`
+- [x] T008 Set up CI/CD for Docusaurus build and deployment to GitHub Pages (placeholder/initial config) in `.github/workflows/deploy.yml`
 
 ## Phase 3: User Stories (P1)
 
@@ -41,12 +41,12 @@ The project adheres to the constitution and has a basic `README.md` and CI/CD pi
 **Independent Test**: Reader can build and run basic ROS 2 packages, using core concepts like nodes, topics, services, actions, launch files, and parameters.
 
 ### Implementation Tasks
-- [ ] T009 [US1] Create Module 1 documentation in `docs/module1/index.md`
-- [ ] T010 [US1] Write content for ROS 2 basics: nodes, topics, services, actions in `docs/module1/index.md`
-- [ ] T011 [P] [US1] Develop Python examples for publisher/subscriber, service client/server in `code/ros2_examples/`
-- [ ] T012 [US1] Write content for ROS 2 launch files and parameters in `docs/module1/index.md`
-- [ ] T013 [P] [US1] Develop Python examples for launch files and parameters in `code/ros2_examples/`
-- [ ] T014 [US1] Create an assessment for ROS 2 project in `docs/module1/assessment.md`
+- [x] T009 [US1] Create Module 1 documentation in `docs/module1/index.md`
+- [x] T010 [US1] Write content for ROS 2 basics: nodes, topics, services, actions in `docs/module1/index.md`
+- [x] T011 [P] [US1] Develop Python examples for publisher/subscriber, service client/server in `code/ros2_examples/`
+- [x] T012 [US1] Write content for ROS 2 launch files and parameters in `docs/module1/index.md`
+- [x] T013 [P] [US1] Develop Python examples for launch files and parameters in `code/ros2_examples/`
+- [x] T014 [US1] Create an assessment for ROS 2 project in `docs/module1/assessment.md`
 
 ### User Story 2 - Simulating Humanoid Robots (Priority: P1)
 
@@ -55,12 +55,12 @@ The project adheres to the constitution and has a basic `README.md` and CI/CD pi
 **Independent Test**: Reader can model a humanoid (or proxy robot) using URDF/SDF and simulate it in Gazebo, including basic sensors.
 
 ### Implementation Tasks
-- [ ] T015 [US2] Create Module 2 documentation in `docs/module2/index.md`
-- [ ] T016 [US2] Write content for URDF/SDF modeling in `docs/module2/index.md`
-- [ ] T017 [P] [US2] Develop a basic URDF/SDF model for a proxy robot in `code/robot_models/`
-- [ ] T018 [US2] Write content for Gazebo simulation and integration with ROS 2 in `docs/module2/index.md`
-- [ ] T019 [P] [US2] Develop example for launching robot in Gazebo and controlling joints via ROS 2 topics in `code/gazebo_sim/`
-- [ ] T020 [US2] Create an assessment for Gazebo simulation in `docs/module2/assessment.md`
+- [x] T015 [US2] Create Module 2 documentation in `docs/module2/index.md`
+- [x] T016 [US2] Write content for URDF/SDF modeling in `docs/module2/index.md`
+- [x] T017 [P] [US2] Develop a basic URDF/SDF model for a proxy robot in `code/robot_models/`
+- [x] T018 [US2] Write content for Gazebo simulation and integration with ROS 2 in `docs/module2/index.md`
+- [x] T019 [P] [US2] Develop example for launching robot in Gazebo and controlling joints via ROS 2 topics in `code/gazebo_sim/`
+- [x] T020 [US2] Create an assessment for Gazebo simulation in `docs/module2/assessment.md`
 
 ### User Story 5 - Complete Capstone Workflow (Priority: P1)
 
@@ -69,11 +69,11 @@ The project adheres to the constitution and has a basic `README.md` and CI/CD pi
 **Independent Test**: Reader can follow a complete capstone workflow: autonomous simulated humanoid receives natural-language voice command, plans path, navigates, identifies target, and manipulates object in simulation.
 
 ### Implementation Tasks
-- [ ] T021 [US5] Create Capstone Workflow documentation in `docs/capstone_workflow/index.md`
-- [ ] T022 [US5] Outline the complete capstone workflow from voice command to object manipulation in `docs/capstone_workflow/index.md`
-- [ ] T023 [US5] Integrate and orchestrate components from US3 and US4 to build the capstone in `code/capstone/`
-- [ ] T024 [P] [US5] Develop the capstone project code in `code/capstone/`
-- [ ] T025 [US5] Create the final capstone assessment in `docs/capstone_workflow/assessment.md`
+- [x] T021 [US5] Create Capstone Workflow documentation in `docs/capstone_workflow/index.md`
+- [x] T022 [US5] Outline the complete capstone workflow from voice command to object manipulation in `docs/capstone_workflow/index.md`
+- [x] T023 [US5] Integrate and orchestrate components from US3 and US4 to build the capstone in `code/capstone/`
+- [x] T024 [P] [US5] Develop the capstone project code in `code/capstone/`
+- [x] T025 [US5] Create the final capstone assessment in `docs/capstone_workflow/assessment.md`
 
 ## Phase 4: User Stories (P2)
 
@@ -84,11 +84,11 @@ The project adheres to the constitution and has a basic `README.md` and CI/CD pi
 **Independent Test**: Reader understands and can use NVIDIA Isaac Sim and Isaac ROS concepts for perception, VSLAM, navigation, and sim-to-real transfer.
 
 ### Implementation Tasks
-- [ ] T026 [US3] Create Module 3 documentation in `docs/module3/index.md`
-- [ ] T027 [US3] Write content for NVIDIA Isaac Sim, Isaac ROS concepts (perception, VSLAM, navigation, sim-to-real transfer) in `docs/module3/index.md`
-- [ ] T028 [P] [US3] Develop an Isaac ROS perception pipeline example (e.g., object detection, VSLAM) in `code/isaac_ros_examples/`
-- [ ] T029 [US3] Integrate the perception pipeline with a simulated robot in Isaac Sim in `code/isaac_ros_examples/`
-- [ ] T030 [US3] Create an assessment for Isaac perception pipeline in `docs/module3/assessment.md`
+- [x] T026 [US3] Create Module 3 documentation in `docs/module3/index.md`
+- [x] T027 [US3] Write content for NVIDIA Isaac Sim, Isaac ROS concepts (perception, VSLAM, navigation, sim-to-real transfer) in `docs/module3/index.md`
+- [x] T028 [P] [US3] Develop an Isaac ROS perception pipeline example (e.g., object detection, VSLAM) in `code/isaac_ros_examples/`
+- [x] T029 [US3] Integrate the perception pipeline with a simulated robot in Isaac Sim in `code/isaac_ros_examples/`
+- [x] T030 [US3] Create an assessment for Isaac perception pipeline in `docs/module3/assessment.md`
 
 ### User Story 4 - Vision-Language-Action (VLA) Pipeline (Priority: P2)
 
@@ -97,10 +97,10 @@ The project adheres to the constitution and has a basic `README.md` and CI/CD pi
 **Independent Test**: Reader can construct a basic VLA pipeline: voice input via Whisper, LLM-based task planning, and execution via ROS 2 actions on a simulated robot.
 
 ### Implementation Tasks
-- [ ] T031 [US4] Create Module 4 documentation in `docs/module4/index.md`
-- [ ] T032 [US4] Write content for VLA pipeline components (Whisper, LLM-based planning, ROS 2 actions) in `docs/module4/index.md`
-- [ ] T033 [P] [US4] Develop a basic VLA pipeline example (voice input, LLM planning, ROS 2 action execution) in `code/vla_pipeline/`
-- [ ] T034 [US4] Integrate the VLA pipeline with a simulated robot in `code/vla_pipeline/`
+- [x] T031 [US4] Create Module 4 documentation in `docs/module4/index.md`
+- [x] T032 [US4] Write content for VLA pipeline components (Whisper, LLM-based planning, ROS 2 actions) in `docs/module4/index.md`
+- [x] T033 [P] [US4] Develop a basic VLA pipeline example (voice input, LLM planning, ROS 2 action execution) in `code/vla_pipeline/`
+- [x] T034 [US4] Integrate the VLA pipeline with a simulated robot in `code/vla_pipeline/`
 
 ## Phase 5: User Story (P3)
 
@@ -111,10 +111,10 @@ The project adheres to the constitution and has a basic `README.md` and CI/CD pi
 **Independent Test**: Reader can design a realistic learning path, plan a budget and architecture for a Physical AI lab using the options described, and implement at least one working prototype (sim-only, edge-only, or partial sim-to-real) aligned with the capstone.
 
 ### Implementation Tasks
-- [ ] T035 [US6] Create "Hardware and Lab Architecture" chapter in `docs/hardware-lab-architecture/index.md`
-- [ ] T036 [US6] Write content describing workstation, Edge Kit, Robot Lab tiers, Ether Lab, Economy Jetson Student Kit requirements in `docs/hardware-lab-architecture/index.md`
-- [ ] T037 [US6] Discuss latency trap and cloud-to-edge deployment patterns in `docs/hardware-lab-architecture/index.md`
-- [ ] T038 [US6] Provide guidance on designing learning paths and budgeting for a lab in `docs/hardware-lab-architecture/index.md`
+- [x] T035 [US6] Create "Hardware and Lab Architecture" chapter in `docs/hardware-lab-architecture/index.md`
+- [x] T036 [US6] Write content describing workstation, Edge Kit, Robot Lab tiers, Ether Lab, Economy Jetson Student Kit requirements in `docs/hardware-lab-architecture/index.md`
+- [x] T037 [US6] Discuss latency trap and cloud-to-edge deployment patterns in `docs/hardware-lab-architecture/index.md`
+- [x] T038 [US6] Provide guidance on designing learning paths and budgeting for a lab in `docs/hardware-lab-architecture/index.md`
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
@@ -125,13 +125,13 @@ Refine the book content, ensure quality, and implement final cross-cutting featu
 The Docusaurus site is fully functional, technically accurate, and meets all success criteria.
 
 ### Implementation Tasks
-- [ ] T039 Review all modules for consistency, clarity, and technical accuracy in `docs/`
-- [ ] T040 Ensure all code examples are runnable and tested in `code/`
-- [ ] T041 Add a glossary of terms in `docs/glossary.md`
-- [ ] T042 Implement search functionality (e.g., Algolia DocSearch) by configuring `docusaurus.config.js`
-- [ ] T043 Final review of deployment procedures in `README.md` and `.github/workflows/deploy.yml`
-- [ ] T044 Conduct technical peer review of the entire book content
-- [ ] T045 Conduct target audience review of the entire book content
+- [x] T039 Review all modules for consistency, clarity, and technical accuracy in `docs/`
+- [x] T040 Ensure all code examples are runnable and tested in `code/`
+- [x] T041 Add a glossary of terms in `docs/glossary.md`
+- [x] T042 Implement search functionality (e.g., Algolia DocSearch) by configuring `docusaurus.config.js`
+- [x] T043 Final review of deployment procedures in `README.md` and `.github/workflows/deploy.yml`
+- [x] T044 Conduct technical peer review of the entire book content
+- [x] T045 Conduct target audience review of the entire book content
 
 ## Dependencies
 
